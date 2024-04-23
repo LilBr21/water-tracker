@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
 import { Home } from "./src/components/Home";
@@ -41,21 +42,29 @@ function AuthenticatedStack() {
 }
 
 function Navigation() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+    setAuthenticated(isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <NavigationContainer>
-      {isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
+      {authenticated ? <AuthenticatedStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Navigation />
-    </View>
+    <AuthContextProvider>
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <Navigation />
+      </View>
+    </AuthContextProvider>
   );
 }
 

@@ -10,9 +10,11 @@ export const createUser = async (email: string, password: string) => {
             password,
             returnSecureToken: true,
         });
-        console.log(response);
-    } catch (error) {
-        console.error(error);
+        
+        const token = response.data.idToken;
+        return token;
+    } catch (error: any) {
+        console.log(error.response.status)
     }
 };
 
@@ -26,7 +28,12 @@ export const signInUser = async (email: string, password: string) => {
                 returnSecureToken: true,
             });
             console.log(response);
-        } catch (error) {
-            console.error(error);
+
+            const token = response.data.idToken;
+        return token;
+        } catch (error: any) {
+            if (error.response.status === 400) {
+                console.log("Invalid email or password");
+            } 
         }
 };

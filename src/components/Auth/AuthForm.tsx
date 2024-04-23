@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { createUser, signInUser } from "../../utils/auth";
+import { useAuth } from "../../store/auth-context";
 import { ExistingAccountButton } from "./ExistingAccountButton";
 import { NewAccountButton } from "./NewAccountButton";
 
@@ -16,6 +17,8 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
+  const { authenticate } = useAuth();
+
   const handleAuthModeSwitch = () => {
     if (isOnLogin) {
       navigation.navigate("Signup");
@@ -24,12 +27,14 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
     }
   };
 
-  const handleSignup = () => {
-    createUser(email, password);
+  const handleSignup = async () => {
+    const token = await createUser(email, password);
+    authenticate(token);
   };
 
-  const handleSignin = () => {
-    signInUser(email, password);
+  const handleSignin = async () => {
+    const token = await signInUser(email, password);
+    authenticate(token);
   };
 
   const handleAuth = () => {

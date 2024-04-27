@@ -46,7 +46,6 @@ function Navigation() {
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    console.log(isAuthenticated);
     setAuthenticated(isAuthenticated);
   }, [isAuthenticated]);
 

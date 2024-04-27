@@ -11,9 +11,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState("");
 
   const authenticate = (token: string) => {
-    console.log(token);
     setToken(token);
-    console.log(token);
   };
 
   const logout = () => {

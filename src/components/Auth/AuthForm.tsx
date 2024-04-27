@@ -7,6 +7,7 @@ import { validatePassword, validateEmail } from "../../utils/validation";
 import { useAuth } from "../../store/auth-context";
 import { Input } from "../../ui/Input";
 import { Button } from "../../ui/Button";
+import { MainTitle } from "../MainTitle/MainTitle";
 import { ExistingAccountButton } from "./ExistingAccountButton";
 import { NewAccountButton } from "./NewAccountButton";
 
@@ -102,6 +103,7 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
         <ExistingAccountButton handleAuthModeSwitch={handleAuthModeSwitch} />
       )}
       <View style={styles.contentContainer}>
+        <MainTitle />
         <Input
           placeholder="email"
           autoComplete="email"
@@ -140,6 +142,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 5,
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
   },
 });

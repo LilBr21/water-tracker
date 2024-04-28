@@ -6,7 +6,7 @@ import { StyleSheet, Button, View } from "react-native";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
-import { Home } from "./src/components/Home";
+import { Home } from "./src/components/Home/Home";
 
 const Stack = createNativeStackNavigator();
 

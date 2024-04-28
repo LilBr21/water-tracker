@@ -1,9 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
-import { colors } from "../ui/constants/colors";
-import { MainTitle } from "./MainTitle/MainTitle";
-import { Button } from "../ui/Button";
+import { useState } from "react";
+import { colors } from "../../ui/constants/colors";
+import { MainTitle } from "../MainTitle/MainTitle";
+import { Button } from "../../ui/Button";
+import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
 
 export const Home = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <View style={styles.container}>
       <MainTitle />
@@ -13,7 +17,8 @@ export const Home = () => {
         stay on top of your hydration goals.
       </Text>
       <View style={styles.buttonContainer}>
-        <Button title="Set your goal" onPress={() => {}} />
+        <Button title="Set your goal" onPress={() => setIsModalOpen(true)} />
+        <GoalSetModal isVisible={isModalOpen} />
       </View>
     </View>
   );

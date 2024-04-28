@@ -18,6 +18,8 @@ interface IProps {
   autoCapitalize?: TextInputProps["autoCapitalize"];
   isError?: boolean;
   secureTextEntry?: boolean;
+  inputMode?: TextInputProps["inputMode"];
+  keyboardType?: TextInputProps["keyboardType"];
 }
 
 export const Input = ({
@@ -31,6 +33,8 @@ export const Input = ({
   autoCapitalize = "none",
   isError = false,
   secureTextEntry,
+  inputMode = "text",
+  keyboardType = "default",
 }: IProps) => {
   return (
     <View style={styles.container}>
@@ -44,6 +48,8 @@ export const Input = ({
         style={styles.textInput}
         onBlur={onBlur}
         onFocus={onFocus}
+        inputMode={inputMode}
+        keyboardType={keyboardType}
       />
       {isError && <Text style={styles.errorText}>{errorText}</Text>}
     </View>

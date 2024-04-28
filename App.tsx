@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Button, View } from "react-native";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
@@ -33,17 +33,29 @@ function AuthStack() {
   );
 }
 
-function AuthenticatedStack() {
+interface IAuthenticatedStackProps {
+  logout: () => void;
+}
+
+function AuthenticatedStack({ logout }: IAuthenticatedStackProps) {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Welcome" component={Home} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: "#102C57" },
+        headerTintColor: "#FEFAF6",
+        contentStyle: { backgroundColor: "#102C57" },
+        headerRight: () => <Button title="Log out" onPress={logout} />,
+        headerTitle: "",
+      }}
+    >
+      <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
   );
 }
 
 function Navigation() {
   const [authenticated, setAuthenticated] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     setAuthenticated(isAuthenticated);
@@ -51,7 +63,7 @@ function Navigation() {
 
   return (
     <NavigationContainer>
-      {authenticated ? <AuthenticatedStack /> : <AuthStack />}
+      {authenticated ? <AuthenticatedStack logout={logout} /> : <AuthStack />}
     </NavigationContainer>
   );
 }

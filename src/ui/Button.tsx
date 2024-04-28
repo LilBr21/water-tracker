@@ -26,6 +26,7 @@ const styles = (color?: string) =>
       padding: 16,
       marginHorizontal: 20,
       borderRadius: 8,
+      alignItems: "center",
     },
     text: {
       color: colors.darkPrimary,

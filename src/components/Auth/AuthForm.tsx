@@ -142,6 +142,5 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 5,
     alignItems: "center",
-    // justifyContent: "center",
   },
 });

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Button, View } from "react-native";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
+import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
 import { Home } from "./src/components/Home/Home";
@@ -71,10 +72,12 @@ function Navigation() {
 export default function App() {
   return (
     <AuthContextProvider>
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <Navigation />
-      </View>
+      <DataContextProvider>
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <Navigation />
+        </View>
+      </DataContextProvider>
     </AuthContextProvider>
   );
 }

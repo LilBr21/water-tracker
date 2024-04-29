@@ -6,17 +6,15 @@ import { Button } from "../../ui/Button";
 import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
 import { getUserGoal } from "../../utils/trackerData";
 import { useAuth } from "../../store/auth-context";
+import { useData } from "../../store/data-context";
 
 export const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userData } = useAuth();
+  const { userGoal } = useData();
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
-  const goal = getUserGoal(userData.userId);
-  console.log("here", goal);
 
   return (
     <View style={styles.container}>
@@ -26,10 +24,18 @@ export const Home = () => {
         Water Tracker, you can effortlessly monitor your daily water intake and
         stay on top of your hydration goals.
       </Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Set your goal" onPress={() => setIsModalOpen(true)} />
-        <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
-      </View>
+      {userGoal > 0 ? (
+        <View>
+          <Text style={styles.text}>
+            Your daily goal is {userGoal} liters of water. Stay hydrated!
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.buttonContainer}>
+          <Button title="Set your goal" onPress={() => setIsModalOpen(true)} />
+          <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
+        </View>
+      )}
     </View>
   );
 };

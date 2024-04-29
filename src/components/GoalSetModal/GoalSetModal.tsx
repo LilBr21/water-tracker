@@ -16,15 +16,12 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
   const { userData } = useAuth();
 
-  console.log(chosenAmmount);
-
   const handleSetGoal = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
 
   const handleSaveGoal = () => {
-    const resp = setGoal(chosenAmmount, userData.userId);
-    console.log(resp);
+    setGoal(chosenAmmount, userData.userId);
     onClose();
   };
 

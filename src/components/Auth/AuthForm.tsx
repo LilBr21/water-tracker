@@ -34,13 +34,17 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   };
 
   const handleSignup = async () => {
-    const token = await createUser(email, password);
-    authenticate(token);
+    const userData = await createUser(email, password);
+    if (userData?.token && userData?.userId) {
+      authenticate(userData);
+    }
   };
 
   const handleSignin = async () => {
-    const token = await signInUser(email, password);
-    authenticate(token);
+    const userData = await signInUser(email, password);
+    if (userData?.token && userData?.userId) {
+      authenticate(userData);
+    }
   };
 
   const handlePasswordChange = (text: string) => {

@@ -1,26 +1,40 @@
 import { createContext, useState, ReactNode, useContext } from "react";
 
+interface IUserData {
+  token: string;
+  userId: string;
+}
+
 export const AuthContext = createContext({
-  token: "",
+  userData: { token: "", userId: "" },
   isAuthenticated: false,
-  authenticate: (token: string) => {},
+  authenticate: (data: IUserData) => {},
   logout: () => {},
 });
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState("");
+  const [userData, setUserData] = useState({
+    token: "",
+    userId: "",
+  });
 
-  const authenticate = (token: string) => {
-    setToken(token);
+  const authenticate = (data: IUserData) => {
+    setUserData({
+      token: data.token,
+      userId: data.userId,
+    });
   };
 
   const logout = () => {
-    setToken("");
+    setUserData({
+      token: "",
+      userId: "",
+    });
   };
 
   const value = {
-    token,
-    isAuthenticated: !!token,
+    userData,
+    isAuthenticated: !!userData.token,
     authenticate,
     logout,
   };

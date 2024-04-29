@@ -4,13 +4,19 @@ import { colors } from "../../ui/constants/colors";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { Button } from "../../ui/Button";
 import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
+import { getUserGoal } from "../../utils/trackerData";
+import { useAuth } from "../../store/auth-context";
 
 export const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userData } = useAuth();
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const goal = getUserGoal(userData.userId);
+  console.log("here", goal);
 
   return (
     <View style={styles.container}>

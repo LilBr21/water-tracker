@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
+import { useAuth } from "../../store/auth-context";
+import { setGoal } from "../../utils/trackerData";
 
 interface IProps {
   isVisible: boolean;
@@ -12,10 +14,18 @@ interface IProps {
 
 export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
+  const { userData } = useAuth();
+
   console.log(chosenAmmount);
 
   const handleSetGoal = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
+  };
+
+  const handleSaveGoal = () => {
+    const resp = setGoal(chosenAmmount, userData.userId);
+    console.log(resp);
+    onClose();
   };
 
   return (
@@ -43,7 +53,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
         <View style={styles.buttonContainer}>
           <Button
             title="Save"
-            onPress={onClose}
+            onPress={handleSaveGoal}
             color={colors.actionPrimary}
             textColor={colors.lightPrimary}
           />

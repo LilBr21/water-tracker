@@ -8,6 +8,10 @@ import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
 export const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <View style={styles.container}>
       <MainTitle />
@@ -18,7 +22,7 @@ export const Home = () => {
       </Text>
       <View style={styles.buttonContainer}>
         <Button title="Set your goal" onPress={() => setIsModalOpen(true)} />
-        <GoalSetModal isVisible={isModalOpen} />
+        <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
       </View>
     </View>
   );

@@ -5,21 +5,22 @@ interface IProps {
   title: string;
   onPress: () => void;
   color?: string;
+  textColor?: string;
 }
 
-export const Button = ({ title, onPress, color }: IProps) => {
+export const Button = ({ title, onPress, color, textColor }: IProps) => {
   return (
     <TouchableOpacity
-      style={styles(color).button}
+      style={styles(color, textColor).button}
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Text style={styles(color).text}>{title}</Text>
+      <Text style={styles(color, textColor).text}>{title}</Text>
     </TouchableOpacity>
   );
 };
 
-const styles = (color?: string) =>
+const styles = (color?: string, textColor?: string) =>
   StyleSheet.create({
     button: {
       backgroundColor: color || colors.lightPrimary,
@@ -29,7 +30,7 @@ const styles = (color?: string) =>
       alignItems: "center",
     },
     text: {
-      color: colors.darkPrimary,
+      color: textColor || colors.darkPrimary,
       fontWeight: "700",
     },
   });

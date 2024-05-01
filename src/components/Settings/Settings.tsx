@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useData } from "../../store/data-context";
 import { Button, ButtonSizes } from "../../ui/Button";
 import { colors } from "../../ui/constants/colors";
-import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
+import { GoalSetModal } from "../Modals/GoalSetModal";
 
 export const Settings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

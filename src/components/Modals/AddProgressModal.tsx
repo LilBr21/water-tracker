@@ -1,31 +1,33 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
+import { format } from "date-fns";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
 import { useAuth } from "../../store/auth-context";
 import { useData } from "../../store/data-context";
-import { setGoal } from "../../utils/trackerData";
+import { updateDailyProgress } from "../../utils/trackerData";
 
 interface IProps {
   isVisible: boolean;
   onClose: () => void;
 }
 
-export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
+export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
   const { userData } = useAuth();
-  const { refetchGoal } = useData();
+  const { refetchDailyProgress, dailyProgress } = useData();
 
-  const handleSetGoal = (ammount: string) => {
+  const handleSetProgress = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
 
-  const handleSaveGoal = () => {
-    console.log(chosenAmmount, userData.userId);
-    setGoal(chosenAmmount, userData.userId);
-    refetchGoal();
+  const handleSaveProgress = () => {
+    const date = format(new Date(), "dd-MM-yyyy");
+    const totalDailyProgress = dailyProgress + chosenAmmount;
+    updateDailyProgress(userData.userId, date, totalDailyProgress);
+    refetchDailyProgress();
     onClose();
   };
 
@@ -43,18 +45,18 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
             color={colors.lightPrimary}
           />
         </TouchableOpacity>
-        <Text style={styles.text}>Set your daily goal.</Text>
-        <Text style={styles.text}>How much water do you want to drink?</Text>
+        <Text style={styles.text}>Add daily progress.</Text>
+        <Text style={styles.text}>How much did you drink?</Text>
         <Input
           inputMode="numeric"
           keyboardType="numeric"
           labelText={"Water ammount in mililiters (ml)"}
-          onChangeText={(ammount) => handleSetGoal(ammount)}
+          onChangeText={(ammount) => handleSetProgress(ammount)}
         />
         <View style={styles.buttonContainer}>
           <Button
             title="Save"
-            onPress={handleSaveGoal}
+            onPress={handleSaveProgress}
             color={colors.actionPrimary}
             textColor={colors.lightPrimary}
           />

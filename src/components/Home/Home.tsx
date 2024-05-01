@@ -6,17 +6,22 @@ import { useState } from "react";
 import { colors } from "../../ui/constants/colors";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { Button } from "../../ui/Button";
-import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
+import { GoalSetModal } from "../Modals/GoalSetModal";
+import { AddProgressModal } from "../Modals/AddProgressModal";
 import { useData } from "../../store/data-context";
 
 export const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userGoal } = useData();
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const { userGoal, dailyProgress } = useData();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  console.log(userGoal);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleCloseProgressModal = () => {
+    setIsProgressModalOpen(false);
   };
 
   const handleOpenSettings = () => {
@@ -39,6 +44,21 @@ export const Home = () => {
           <Text style={styles.text}>
             Your daily goal is {userGoal} ml of water. Stay hydrated!
           </Text>
+          <Text style={styles.text}>
+            {dailyProgress
+              ? `You've drunk ${dailyProgress} ml of water today.`
+              : "You haven't drunk any water today."}
+          </Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Add progress"
+              onPress={() => setIsProgressModalOpen(true)}
+            />
+            <AddProgressModal
+              isVisible={isProgressModalOpen}
+              onClose={handleCloseProgressModal}
+            />
+          </View>
         </View>
       ) : (
         <View>

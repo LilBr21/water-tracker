@@ -10,6 +10,7 @@ import { useAuth } from "./auth-context";
 
 export const DataContext = createContext({
   userGoal: 0,
+  refetchGoal: () => {},
 });
 
 export const DataContextProvider = ({ children }: { children: ReactNode }) => {
@@ -22,6 +23,10 @@ export const DataContextProvider = ({ children }: { children: ReactNode }) => {
     setUserGoal(goal);
   };
 
+  const refetchGoal = () => {
+    setGoal();
+  };
+
   useEffect(() => {
     console.log("useEffect");
     setGoal();
@@ -29,6 +34,7 @@ export const DataContextProvider = ({ children }: { children: ReactNode }) => {
 
   const value = {
     userGoal,
+    refetchGoal,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

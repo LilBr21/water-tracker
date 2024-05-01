@@ -5,6 +5,7 @@ import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
 import { useAuth } from "../../store/auth-context";
+import { useData } from "../../store/data-context";
 import { setGoal } from "../../utils/trackerData";
 
 interface IProps {
@@ -15,6 +16,7 @@ interface IProps {
 export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
   const { userData } = useAuth();
+  const { refetchGoal } = useData();
 
   const handleSetGoal = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
@@ -23,6 +25,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const handleSaveGoal = () => {
     console.log(chosenAmmount, userData.userId);
     setGoal(chosenAmmount, userData.userId);
+    refetchGoal();
     onClose();
   };
 

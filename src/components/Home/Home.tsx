@@ -1,39 +1,59 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import { colors } from "../../ui/constants/colors";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { Button } from "../../ui/Button";
 import { GoalSetModal } from "../GoalSetModal/GoalSetModal";
-import { getUserGoal } from "../../utils/trackerData";
-import { useAuth } from "../../store/auth-context";
 import { useData } from "../../store/data-context";
 
 export const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userGoal } = useData();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  console.log(userGoal);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
+  const handleOpenSettings = () => {
+    navigation.navigate("Settings");
+  };
+
   return (
     <View style={styles.container}>
+      {userGoal > 0 && (
+        <TouchableOpacity
+          style={styles.settingsIconContainer}
+          onPress={handleOpenSettings}
+        >
+          <AntDesign name="setting" size={24} color={colors.lightPrimary} />
+        </TouchableOpacity>
+      )}
       <MainTitle />
-      <Text style={styles.text}>
-        Welcome to Water Tracker, your personalized hydration companion. With
-        Water Tracker, you can effortlessly monitor your daily water intake and
-        stay on top of your hydration goals.
-      </Text>
       {userGoal > 0 ? (
         <View>
           <Text style={styles.text}>
-            Your daily goal is {userGoal} liters of water. Stay hydrated!
+            Your daily goal is {userGoal} ml of water. Stay hydrated!
           </Text>
         </View>
       ) : (
-        <View style={styles.buttonContainer}>
-          <Button title="Set your goal" onPress={() => setIsModalOpen(true)} />
-          <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
+        <View>
+          <Text style={styles.text}>
+            Welcome to Water Tracker, your personalized hydration companion.
+            With Water Tracker, you can effortlessly monitor your daily water
+            intake and stay on top of your hydration goals.
+          </Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Set your goal"
+              onPress={() => setIsModalOpen(true)}
+            />
+            <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
+          </View>
         </View>
       )}
     </View>
@@ -52,5 +72,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 36,
+  },
+  settingsIconContainer: {
+    position: "absolute",
+    top: 12,
+    right: 26,
   },
 });

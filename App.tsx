@@ -8,6 +8,7 @@ import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
 import { Home } from "./src/components/Home/Home";
+import { Settings } from "./src/components/Settings/Settings";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +51,7 @@ function AuthenticatedStack({ logout }: IAuthenticatedStackProps) {
       }}
     >
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Settings" component={Settings} />
     </Stack.Navigator>
   );
 }

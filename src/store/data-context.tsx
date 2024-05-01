@@ -18,6 +18,7 @@ export const DataContextProvider = ({ children }: { children: ReactNode }) => {
 
   const setGoal = async () => {
     const goal = await getUserGoal(userData.userId);
+    console.log(goal, userData.userId);
     setUserGoal(goal);
   };
 

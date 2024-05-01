@@ -13,7 +13,6 @@ export const setGoal = (goal: number, userId: string) => {
 export const getUserGoal = async (userId: string) => {
     try {
         const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?print=pretty`);
-        console.log('data', response.data)
         return response.data.goal;
     } catch (e) {
         console.log(e)

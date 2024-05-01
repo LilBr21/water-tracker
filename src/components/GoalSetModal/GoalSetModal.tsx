@@ -21,6 +21,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   };
 
   const handleSaveGoal = () => {
+    console.log(chosenAmmount, userData.userId);
     setGoal(chosenAmmount, userData.userId);
     onClose();
   };
@@ -44,7 +45,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
         <Input
           inputMode="numeric"
           keyboardType="numeric"
-          labelText={"Water ammount in liters"}
+          labelText={"Water ammount in mililiters (ml)"}
           onChangeText={(ammount) => handleSetGoal(ammount)}
         />
         <View style={styles.buttonContainer}>

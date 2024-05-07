@@ -25,7 +25,8 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
 
   const handleSaveProgress = () => {
     const date = format(new Date(), "dd-MM-yyyy");
-    const totalDailyProgress = dailyProgress + chosenAmmount;
+    const drankToday = dailyProgress ?? 0;
+    const totalDailyProgress = drankToday + chosenAmmount;
     updateDailyProgress(userData.userId, date, totalDailyProgress);
     refetchDailyProgress();
     onClose();

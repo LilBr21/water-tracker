@@ -6,7 +6,7 @@ import { useState } from "react";
 import { colors } from "../../ui/constants/colors";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { Button } from "../../ui/Button";
-import { GlassFillAnimation } from "../../ui/Glass";
+import { DailyProgressChart } from "../../ui/charts/DailyProgressChart";
 import { GoalSetModal } from "../Modals/GoalSetModal";
 import { AddProgressModal } from "../Modals/AddProgressModal";
 import { useData } from "../../store/data-context";
@@ -51,7 +51,7 @@ export const Home = () => {
               : "You haven't drunk any water today."}
           </Text>
           <View style={styles.glassContainer}>
-            <GlassFillAnimation
+            <DailyProgressChart
               drankAmount={dailyProgress ?? 0}
               dailyGoal={userGoal}
             />

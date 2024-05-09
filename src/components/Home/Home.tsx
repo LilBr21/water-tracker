@@ -1,29 +1,16 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
 import { colors } from "../../ui/constants/colors";
 import { MainTitle } from "../MainTitle/MainTitle";
-import { Button } from "../../ui/Button";
-import { DailyProgressChart } from "../../ui/charts/DailyProgressChart";
-import { GoalSetModal } from "../Modals/GoalSetModal";
-import { AddProgressModal } from "../Modals/AddProgressModal";
 import { useData } from "../../store/data-context";
+import { Progress } from "./Progress";
+import { NoGoal } from "./NoGoal";
 
 export const Home = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
-  const { userGoal, dailyProgress } = useData();
+  const { userGoal } = useData();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCloseProgressModal = () => {
-    setIsProgressModalOpen(false);
-  };
 
   const handleOpenSettings = () => {
     navigation.navigate("Settings");
@@ -40,49 +27,7 @@ export const Home = () => {
         </TouchableOpacity>
       )}
       <MainTitle />
-      {userGoal > 0 ? (
-        <View>
-          <Text style={styles.text}>
-            Your daily goal is {userGoal} ml of water. Stay hydrated!
-          </Text>
-          <Text style={styles.text}>
-            {dailyProgress
-              ? `You've drunk ${dailyProgress} ml of water today.`
-              : "You haven't drunk any water today."}
-          </Text>
-          <View style={styles.glassContainer}>
-            <DailyProgressChart
-              drankAmount={dailyProgress ?? 0}
-              dailyGoal={userGoal}
-            />
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Add progress"
-              onPress={() => setIsProgressModalOpen(true)}
-            />
-            <AddProgressModal
-              isVisible={isProgressModalOpen}
-              onClose={handleCloseProgressModal}
-            />
-          </View>
-        </View>
-      ) : (
-        <View>
-          <Text style={styles.text}>
-            Welcome to Water Tracker, your personalized hydration companion.
-            With Water Tracker, you can effortlessly monitor your daily water
-            intake and stay on top of your hydration goals.
-          </Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Set your goal"
-              onPress={() => setIsModalOpen(true)}
-            />
-            <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
-          </View>
-        </View>
-      )}
+      {userGoal > 0 ? <Progress /> : <NoGoal />}
     </View>
   );
 };
@@ -91,17 +36,6 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 64,
     paddingHorizontal: 24,
-  },
-  text: {
-    color: colors.lightPrimary,
-    fontSize: 16,
-    textAlign: "justify",
-  },
-  buttonContainer: {
-    padding: 36,
-  },
-  glassContainer: {
-    marginTop: 24,
   },
   settingsIconContainer: {
     position: "absolute",

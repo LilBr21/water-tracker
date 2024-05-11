@@ -52,7 +52,7 @@ export const getWeeklyProgress = async (userId: string) => {
     const weeklyProgress = [];
 
     for (const day of weekDays) {
-        const progress = await getDailyProgress(userId, day).catch(err => 0); 
+        const progress = await getDailyProgress(userId, day); 
         weeklyProgress.push(progress ?? 0);
     }
 

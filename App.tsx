@@ -7,8 +7,7 @@ import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
-import { Home } from "./src/components/Home/Home";
-import { Settings } from "./src/components/Settings/Settings";
+import { MyTabs } from "./src/components/BottomBar/BottomBar";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,30 +34,9 @@ function AuthStack() {
   );
 }
 
-interface IAuthenticatedStackProps {
-  logout: () => void;
-}
-
-function AuthenticatedStack({ logout }: IAuthenticatedStackProps) {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: "#102C57" },
-        headerTintColor: "#FEFAF6",
-        contentStyle: { backgroundColor: "#102C57" },
-        headerRight: () => <Button title="Log out" onPress={logout} />,
-        headerTitle: "",
-      }}
-    >
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Settings" component={Settings} />
-    </Stack.Navigator>
-  );
-}
-
 function Navigation() {
   const [authenticated, setAuthenticated] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     setAuthenticated(isAuthenticated);
@@ -66,7 +44,7 @@ function Navigation() {
 
   return (
     <NavigationContainer>
-      {authenticated ? <AuthenticatedStack logout={logout} /> : <AuthStack />}
+      {authenticated ? <MyTabs /> : <AuthStack />}
     </NavigationContainer>
   );
 }

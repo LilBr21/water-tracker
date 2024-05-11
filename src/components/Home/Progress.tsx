@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useState } from "react";
 import { Button } from "../../ui/Button";
 import { DailyProgressChart } from "../../ui/charts/DailyProgressChart";
+import { WeeklyProgressChart } from "../../ui/charts/WeeklyProgressChart";
 import { AddProgressModal } from "../Modals/AddProgressModal";
 import { useData } from "../../store/data-context";
 import { colors } from "../../ui/constants/colors";
@@ -29,6 +30,7 @@ export const Progress = () => {
           drankAmount={dailyProgress ?? 0}
           dailyGoal={userGoal}
         />
+        <WeeklyProgressChart />
       </View>
       <View style={styles.buttonContainer}>
         <Button title="Add progress" onPress={() => setIsModalOpen(true)} />

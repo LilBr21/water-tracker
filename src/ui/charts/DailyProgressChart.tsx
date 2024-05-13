@@ -1,6 +1,6 @@
 import { View, Dimensions, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-import { ProgressChart } from "react-native-chart-kit";
+import { VictoryPie, VictoryChart, VictoryLabel } from "victory-native";
 import { colors } from "../constants/colors";
 
 interface IProps {
@@ -8,37 +8,49 @@ interface IProps {
   dailyGoal: number;
 }
 
-const chartConfig = {
-  backgroundGradientFrom: colors.darkPrimary,
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: colors.darkPrimary,
-  backgroundGradientToOpacity: 1,
-  color: (opacity = 1) => `rgba(118, 192, 210, ${opacity})`,
-  strokeWidth: 2,
-  barPercentage: 0.9,
-  useShadowColorFromDataset: false,
-};
-
 export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
   const [chartData, setChartData] = useState(0);
   const windowWidth = Dimensions.get("window").width;
 
   useEffect(() => {
-    const percentage = drankAmount / dailyGoal;
+    const percentage = (drankAmount / dailyGoal) * 100;
     setChartData(percentage);
+    console.log(chartData);
   }, [drankAmount, dailyGoal]);
 
   return (
     <View style={styles.container}>
-      <ProgressChart
-        data={{ data: [chartData] }}
-        width={windowWidth - 32}
-        height={260}
-        strokeWidth={16}
-        radius={32}
-        chartConfig={chartConfig}
-        hideLegend={false}
-      />
+      <VictoryChart height={windowWidth - 40} width={windowWidth - 40}>
+        <VictoryPie
+          standalone={false}
+          animate={{ duration: 1000 }}
+          width={windowWidth - 40}
+          height={windowWidth - 40}
+          data={[
+            { x: 1, y: chartData },
+            { x: 2, y: 100 - chartData },
+          ]}
+          innerRadius={120}
+          cornerRadius={0}
+          labels={() => null}
+          style={{
+            data: {
+              fill: ({ datum }) => {
+                const color = colors.actionPrimary;
+                return datum.x === 1 ? color : colors.lightPrimary;
+              },
+            },
+          }}
+        />
+        <VictoryLabel
+          textAnchor="middle"
+          verticalAnchor="middle"
+          x={200}
+          y={200}
+          text={`${Math.round(chartData)}%`}
+          style={{ fontSize: 45, fill: colors.actionPrimary }}
+        />
+      </VictoryChart>
     </View>
   );
 };

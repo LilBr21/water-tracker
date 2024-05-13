@@ -36,7 +36,10 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
           style={{
             data: {
               fill: ({ datum }) => {
-                const color = colors.actionPrimary;
+                const color =
+                  chartData > 100
+                    ? colors.successPrimary
+                    : colors.actionPrimary;
                 return datum.x === 1 ? color : colors.lightPrimary;
               },
             },
@@ -48,7 +51,12 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
           x={200}
           y={200}
           text={`${Math.round(chartData)}%`}
-          style={{ fontSize: 45, fill: colors.actionPrimary }}
+          style={{
+            fontSize: 45,
+            fill: `${
+              chartData > 100 ? colors.successPrimary : colors.actionPrimary
+            }`,
+          }}
         />
       </VictoryChart>
     </View>

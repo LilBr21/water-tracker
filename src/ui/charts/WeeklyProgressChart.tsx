@@ -1,23 +1,11 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Dimensions, Text } from "react-native";
-import { BarChart } from "react-native-chart-kit";
+import { VictoryChart, VictoryBar, VictoryAxis } from "victory-native";
 import { getDay } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getWeeklyProgress } from "../../utils/trackerData";
 import { colors } from "../constants/colors";
-
-const chartConfig = {
-  backgroundGradientFrom: colors.darkPrimary,
-  backgroundGradientFromOpacity: 1,
-  backgroundGradientTo: colors.darkPrimary,
-  backgroundGradientToOpacity: 1,
-  color: (opacity = 1) => `rgba(118, 192, 210, ${opacity})`,
-  strokeWidth: 1,
-  barPercentage: 1,
-  useShadowColorFromDataset: false,
-  decimalPlaces: 0,
-};
 
 export const WeeklyProgressChart = () => {
   const [weeklyProgress, setWeeklyProgress] = useState<any[]>([]);
@@ -35,34 +23,53 @@ export const WeeklyProgressChart = () => {
     fetchWeeklyProgress();
   }, [userData.userId]);
 
-  const data = {
-    labels: getPastWeekDays(currentDay).reverse(),
-    datasets: [
-      {
-        data: weeklyProgress,
-      },
-    ],
+  const generateData = () => {
+    return weeklyProgress.map((day, index) => {
+      return {
+        x: getPastWeekDays(currentDay)[index],
+        y: day,
+        label: day,
+      };
+    });
   };
 
+  console.log(generateData());
+
   const windowWidth = Dimensions.get("window").width;
+
+  const chartTheme = {
+    axis: {
+      style: {
+        axis: {
+          fill: colors.lightPrimary,
+          stroke: colors.lightPrimary,
+        },
+        tickLabels: {
+          // this changed the color of my numbers to white
+          fill: colors.lightPrimary,
+        },
+        grid: {
+          fill: "rgba(254, 250, 246, 0.1)",
+          stroke: "rgba(254, 250, 246, 0.1)",
+          pointerEvents: "painted",
+        },
+      },
+    },
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Your last week statistics:</Text>
       <View style={styles.chartContainer}>
-        <BarChart
-          data={data}
-          width={windowWidth - 20}
-          height={300}
-          yAxisLabel=""
-          yAxisSuffix="&nbsp;ml"
-          chartConfig={chartConfig}
-          verticalLabelRotation={0}
-          fromZero
-          showValuesOnTopOfBars
-          withHorizontalLabels={false}
-          withInnerLines={false}
-        />
+        <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
+          <VictoryBar
+            data={generateData().reverse()}
+            style={{
+              data: { fill: colors.actionPrimary },
+              labels: { fill: colors.lightPrimary },
+            }}
+          />
+        </VictoryChart>
       </View>
     </View>
   );

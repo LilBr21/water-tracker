@@ -47,7 +47,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           />
         </TouchableOpacity>
         <Text style={styles.text}>Add daily progress.</Text>
-        <Text style={styles.text}>How much did you drink?</Text>
+        <Text style={styles.text}>How much water did you drink?</Text>
         <Input
           inputMode="numeric"
           keyboardType="numeric"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Dimensions } from "react-native";
+import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { getDay } from "date-fns";
 import { useAuth } from "../../store/auth-context";
@@ -9,13 +9,14 @@ import { colors } from "../constants/colors";
 
 const chartConfig = {
   backgroundGradientFrom: colors.darkPrimary,
-  backgroundGradientFromOpacity: 0,
+  backgroundGradientFromOpacity: 1,
   backgroundGradientTo: colors.darkPrimary,
   backgroundGradientToOpacity: 1,
   color: (opacity = 1) => `rgba(118, 192, 210, ${opacity})`,
-  strokeWidth: 2,
-  barPercentage: 0.9,
+  strokeWidth: 1,
+  barPercentage: 1,
   useShadowColorFromDataset: false,
+  decimalPlaces: 0,
 };
 
 export const WeeklyProgressChart = () => {
@@ -27,7 +28,7 @@ export const WeeklyProgressChart = () => {
 
   const fetchWeeklyProgress = async () => {
     const progressData = await getWeeklyProgress(userData.userId);
-    setWeeklyProgress(progressData);
+    setWeeklyProgress(progressData.reverse());
   };
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export const WeeklyProgressChart = () => {
   }, [userData.userId]);
 
   const data = {
-    labels: getPastWeekDays(currentDay),
+    labels: getPastWeekDays(currentDay).reverse(),
     datasets: [
       {
         data: weeklyProgress,
@@ -46,17 +47,35 @@ export const WeeklyProgressChart = () => {
   const windowWidth = Dimensions.get("window").width;
 
   return (
-    <View>
-      <BarChart
-        data={data}
-        width={windowWidth}
-        height={220}
-        yAxisLabel=""
-        yAxisSuffix="ml"
-        chartConfig={chartConfig}
-        verticalLabelRotation={30}
-        fromZero
-      />
+    <View style={styles.container}>
+      <Text style={styles.text}>Your last week statistics:</Text>
+      <View style={styles.chartContainer}>
+        <BarChart
+          data={data}
+          width={windowWidth - 20}
+          height={300}
+          yAxisLabel=""
+          yAxisSuffix="&nbsp;ml"
+          chartConfig={chartConfig}
+          verticalLabelRotation={0}
+          fromZero
+          showValuesOnTopOfBars
+          withHorizontalLabels={false}
+          withInnerLines={false}
+        />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {},
+  chartContainer: {
+    flex: 1,
+  },
+  text: {
+    color: colors.lightPrimary,
+    fontSize: 16,
+    margin: 16,
+  },
+});

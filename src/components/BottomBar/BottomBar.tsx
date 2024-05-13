@@ -24,7 +24,12 @@ export const MyTabs = () => {
         headerTintColor: "#FEFAF6",
         headerRight: () => <Button title="Log out" onPress={logout} />,
         headerTitle: "",
-        tabBarStyle: { paddingBottom: 0, marginBottom: 32, borderRadius: 8 },
+        tabBarStyle: {
+          paddingBottom: 0,
+          marginBottom: 32,
+          borderRadius: 8,
+          height: 64,
+        },
       }}
     >
       <Tab.Screen
@@ -39,6 +44,7 @@ export const MyTabs = () => {
               color={focused ? colors.lightPrimary : colors.actionPrimary}
             />
           ),
+          tabBarLabelStyle: { marginBottom: 8 },
         }}
       />
       <Tab.Screen
@@ -53,6 +59,7 @@ export const MyTabs = () => {
               color={focused ? colors.lightPrimary : colors.actionPrimary}
             />
           ),
+          tabBarLabelStyle: { marginBottom: 8 },
         }}
       />
       <Tab.Screen
@@ -67,6 +74,7 @@ export const MyTabs = () => {
               color={focused ? colors.lightPrimary : colors.actionPrimary}
             />
           ),
+          tabBarLabelStyle: { marginBottom: 8 },
         }}
       />
     </Tab.Navigator>

@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useFonts } from "expo-font";
 import WaterDrop from "../../assets/drop-filled.svg";
 import { colors } from "../../ui/constants/colors";
 
@@ -7,15 +8,19 @@ interface IProps {
 }
 
 export const MainTitle = ({ isOnHome = false }: IProps) => {
+  const [fontsLoaded] = useFonts({
+    "Pacifico-Refular": require("../../assets/fonts/Pacifico-Regular.ttf"),
+  });
+
   return (
-    <View style={styles(isOnHome).container}>
+    <View style={styles(isOnHome, fontsLoaded).container}>
       <WaterDrop width={isOnHome ? 64 : 120} height={isOnHome ? 64 : 120} />
-      <Text style={styles(isOnHome).text}>Water Tracker</Text>
+      <Text style={styles(isOnHome, fontsLoaded).text}>Water Tracker</Text>
     </View>
   );
 };
 
-const styles = (isOnHome: boolean) =>
+const styles = (isOnHome: boolean, fontsLoaded: boolean) =>
   StyleSheet.create({
     container: {
       display: "flex",
@@ -28,7 +33,8 @@ const styles = (isOnHome: boolean) =>
     },
     text: {
       color: colors.lightPrimary,
-      fontSize: isOnHome ? 24 : 32,
+      fontSize: isOnHome ? 24 : 36,
+      fontFamily: fontsLoaded ? "Pacifico-Refular" : "",
     },
     image: {
       width: 32,

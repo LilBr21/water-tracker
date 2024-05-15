@@ -34,9 +34,10 @@ export const updateDailyProgress = async (userId: string, date: string, progress
 export const getDailyProgress = async (userId: string, date: string) => {
     try {
         const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}.json?print=pretty`);
-        return response.data.progress;
-    } catch (e) {
-        console.log(e)
+        console.log(response.data, response.status)
+        return response.data ? response.data.progress : 0;
+    } catch (error) {
+        console.log('getDailyProgress', error)
     }
 }
 

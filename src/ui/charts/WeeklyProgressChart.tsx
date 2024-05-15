@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, Dimensions, Text } from "react-native";
-import { VictoryChart, VictoryBar, VictoryAxis } from "victory-native";
-import { getDay } from "date-fns";
+import { StyleSheet, View, Text } from "react-native";
+import { VictoryChart, VictoryBar } from "victory-native";
+import { getDay, format, subDays } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getWeeklyProgress } from "../../utils/trackerData";
@@ -33,9 +33,9 @@ export const WeeklyProgressChart = () => {
     });
   };
 
-  console.log(generateData());
-
-  const windowWidth = Dimensions.get("window").width;
+  const todayFormatted = format(new Date(), "dd.MM");
+  const sixDaysAgo = subDays(new Date(), 6);
+  const sixDaysAgoFormatted = format(sixDaysAgo, "dd.MM");
 
   const chartTheme = {
     axis: {
@@ -45,7 +45,6 @@ export const WeeklyProgressChart = () => {
           stroke: colors.lightPrimary,
         },
         tickLabels: {
-          // this changed the color of my numbers to white
           fill: colors.lightPrimary,
         },
         grid: {
@@ -58,8 +57,11 @@ export const WeeklyProgressChart = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <Text style={styles.text}>Your last week statistics:</Text>
+      <Text style={styles.date}>
+        {sixDaysAgoFormatted} - {todayFormatted}
+      </Text>
       <View style={styles.chartContainer}>
         <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
           <VictoryBar
@@ -76,7 +78,6 @@ export const WeeklyProgressChart = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
   chartContainer: {
     flex: 1,
   },
@@ -84,5 +85,11 @@ const styles = StyleSheet.create({
     color: colors.lightPrimary,
     fontSize: 16,
     margin: 16,
+    textAlign: "center",
+  },
+  date: {
+    color: colors.lightPrimary,
+    fontSize: 16,
+    textAlign: "center",
   },
 });

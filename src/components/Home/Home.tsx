@@ -26,7 +26,7 @@ export const Home = () => {
           <AntDesign name="setting" size={24} color={colors.lightPrimary} />
         </TouchableOpacity>
       )}
-      <MainTitle />
+      <MainTitle isOnHome />
       {userGoal > 0 ? <Progress /> : <NoGoal />}
     </View>
   );

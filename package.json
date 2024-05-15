@@ -24,11 +24,13 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
-    "victory-native": "^37.0.2"
+    "victory-native": "^37.0.2",
+    "expo-font": "~11.10.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@types/node": "^20.12.7"
+    "@types/node": "^20.12.7",
+    "react-native-svg-transformer": "^1.4.0"
   },
   "private": true
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Button, View } from "react-native";
+import { StyleSheet, SafeAreaView, View } from "react-native";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
@@ -53,10 +53,10 @@ export default function App() {
   return (
     <AuthContextProvider>
       <DataContextProvider>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <StatusBar style="auto" />
           <Navigation />
-        </View>
+        </SafeAreaView>
       </DataContextProvider>
     </AuthContextProvider>
   );

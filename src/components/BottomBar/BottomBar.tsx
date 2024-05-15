@@ -10,23 +10,17 @@ import { useAuth } from "../../store/auth-context";
 const Tab = createBottomTabNavigator();
 
 export const MyTabs = () => {
-  const { logout } = useAuth();
-
   return (
     <Tab.Navigator
       initialRouteName="Home"
       sceneContainerStyle={styles.container}
       screenOptions={{
-        headerStyle: { backgroundColor: "#102C57" },
+        headerShown: false,
         tabBarActiveBackgroundColor: colors.actionPrimary,
         tabBarActiveTintColor: colors.lightPrimary,
         tabBarInactiveBackgroundColor: "#102C57",
-        headerTintColor: "#FEFAF6",
-        headerRight: () => <Button title="Log out" onPress={logout} />,
-        headerTitle: "",
         tabBarStyle: {
           paddingBottom: 0,
-          marginBottom: 32,
           borderRadius: 8,
           height: 64,
         },

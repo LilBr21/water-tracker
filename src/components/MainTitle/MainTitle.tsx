@@ -36,8 +36,4 @@ const styles = (isOnHome: boolean, fontsLoaded: boolean) =>
       fontSize: isOnHome ? 24 : 36,
       fontFamily: fontsLoaded ? "Pacifico-Refular" : "",
     },
-    image: {
-      width: 32,
-      height: 32,
-    },
   });

@@ -1,6 +1,11 @@
 import { View, Dimensions, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-import { VictoryPie, VictoryChart, VictoryLabel } from "victory-native";
+import {
+  VictoryPie,
+  VictoryChart,
+  VictoryLabel,
+  VictoryAxis,
+} from "victory-native";
 import { colors } from "../constants/colors";
 
 interface IProps {
@@ -43,6 +48,13 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
                 return datum.x === 1 ? color : colors.lightPrimary;
               },
             },
+          }}
+        />
+        <VictoryAxis
+          style={{
+            axis: { stroke: "transparent" },
+            ticks: { stroke: "transparent" },
+            tickLabels: { fill: "transparent" },
           }}
         />
         <VictoryLabel

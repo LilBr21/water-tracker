@@ -35,7 +35,6 @@ const styles = (paddingValue: number, color?: string, textColor?: string) =>
     button: {
       backgroundColor: color || colors.lightPrimary,
       padding: paddingValue,
-      marginHorizontal: 20,
       borderRadius: 8,
       alignItems: "center",
     },

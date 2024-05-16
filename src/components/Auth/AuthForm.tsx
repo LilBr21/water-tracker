@@ -6,7 +6,8 @@ import { createUser, signInUser } from "../../utils/auth";
 import { validatePassword, validateEmail } from "../../utils/validation";
 import { useAuth } from "../../store/auth-context";
 import { Input } from "../../ui/Input";
-import { Button } from "../../ui/Button";
+import { Button, ButtonWidth, ButtonSizes } from "../../ui/Button";
+import { colors } from "../../ui/constants/colors";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { ExistingAccountButton } from "./ExistingAccountButton";
 import { NewAccountButton } from "./NewAccountButton";
@@ -129,10 +130,16 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
           isError={!!passwordError}
           errorText={passwordError}
         />
-        <Button
-          title={isOnLogin ? "Sign in" : "Sign up"}
-          onPress={handleAuth}
-        />
+        <View style={styles.buttonContainer}>
+          <Button
+            title={isOnLogin ? "Sign in" : "Sign up"}
+            onPress={handleAuth}
+            width={ButtonWidth.Full}
+            size={ButtonSizes.M}
+            color={colors.actionPrimary}
+            textColor={colors.lightPrimary}
+          />
+        </View>
       </View>
     </View>
   );
@@ -146,5 +153,10 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 5,
     alignItems: "center",
+  },
+  buttonContainer: {
+    width: "100%",
+    paddingHorizontal: 40,
+    paddingTop: 24,
   },
 });

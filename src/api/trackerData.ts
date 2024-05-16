@@ -1,7 +1,7 @@
 import axios from "axios";
 import { format } from "date-fns";
 
-export const setGoal = (goal: number, userId: string) => {
+export const setGoal = async (goal: number, userId: string) => {
     try {
         axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json`, {
             goal
@@ -14,9 +14,10 @@ export const setGoal = (goal: number, userId: string) => {
 export const getUserGoal = async (userId: string) => {
     try {
         const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?print=pretty`);
-        return response.data.goal;
+        return response.data.goal ?? 0;
     } catch (e) {
         console.log(e)
+        throw new Error(`Failed to fetch user goal, ${e}`);
     }
 }
 
@@ -34,7 +35,6 @@ export const updateDailyProgress = async (userId: string, date: string, progress
 export const getDailyProgress = async (userId: string, date: string) => {
     try {
         const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}.json?print=pretty`);
-        console.log(response.data, response.status)
         return response.data ? response.data.progress : 0;
     } catch (error) {
         console.log('getDailyProgress', error)

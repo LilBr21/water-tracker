@@ -1,11 +1,20 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { useData } from "../../store/data-context";
 import { Progress } from "./Progress";
 import { NoGoal } from "./NoGoal";
 
 export const Home = () => {
-  const { userGoal } = useData();
+  const { userGoal, isGoalLoading } = useData();
+
+  if (isGoalLoading) {
+    return (
+      <View style={styles.container}>
+        <MainTitle isOnHome />
+        <ActivityIndicator size="large" color="#102C57" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

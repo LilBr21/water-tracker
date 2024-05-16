@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { createUser, signInUser } from "../../utils/auth";
+import { createUser, signInUser } from "../../api/auth";
 import { validatePassword, validateEmail } from "../../utils/validation";
 import { useAuth } from "../../store/auth-context";
 import { Input } from "../../ui/Input";

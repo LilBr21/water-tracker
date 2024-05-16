@@ -7,7 +7,7 @@ import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
 import { useAuth } from "../../store/auth-context";
 import { useData } from "../../store/data-context";
-import { updateDailyProgress } from "../../utils/trackerData";
+import { useUpdateDailyProgress } from "../../hooks/useData";
 
 interface IProps {
   isVisible: boolean;
@@ -18,18 +18,28 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
   const { userData } = useAuth();
   const { refetchDailyProgress, dailyProgress } = useData();
+  const { updateProgress: updateDailyProgress } = useUpdateDailyProgress();
 
   const handleSetProgress = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
 
-  const handleSaveProgress = () => {
+  const handleSaveProgress = async () => {
     const date = format(new Date(), "dd-MM-yyyy");
     const drankToday = dailyProgress ?? 0;
     const totalDailyProgress = drankToday + chosenAmmount;
-    updateDailyProgress(userData.userId, date, totalDailyProgress);
-    refetchDailyProgress();
-    onClose();
+
+    try {
+      await updateDailyProgress({
+        userId: userData.userId,
+        date,
+        progress: totalDailyProgress,
+      });
+      refetchDailyProgress();
+      onClose();
+    } catch (error) {
+      console.error("Error updating progress:", error);
+    }
   };
 
   return (

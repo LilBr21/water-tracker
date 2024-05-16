@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView, View } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
@@ -50,15 +51,26 @@ function Navigation() {
 }
 
 export default function App() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        retry: 0,
+      },
+    },
+  });
+
   return (
-    <AuthContextProvider>
-      <DataContextProvider>
-        <SafeAreaView style={styles.container}>
-          <StatusBar style="auto" />
-          <Navigation />
-        </SafeAreaView>
-      </DataContextProvider>
-    </AuthContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
+        <DataContextProvider>
+          <SafeAreaView style={styles.container}>
+            <StatusBar style="auto" />
+            <Navigation />
+          </SafeAreaView>
+        </DataContextProvider>
+      </AuthContextProvider>
+    </QueryClientProvider>
   );
 }
 

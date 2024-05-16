@@ -4,27 +4,20 @@ import { VictoryChart, VictoryBar } from "victory-native";
 import { getDay, format, subDays } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
-import { getWeeklyProgress } from "../../utils/trackerData";
+import { getWeeklyProgress } from "../../api/trackerData";
+import { useGetWeeklyProgress } from "../../hooks/useData";
 import { colors } from "../constants/colors";
 
 export const WeeklyProgressChart = () => {
-  const [weeklyProgress, setWeeklyProgress] = useState<any[]>([]);
   const { userData } = useAuth();
+  const { weeklyProgressData } = useGetWeeklyProgress(userData.userId);
+  console.log(weeklyProgressData);
 
   const currentDayNumber = getDay(new Date());
   const currentDay = getCurrentWeekDay(currentDayNumber);
 
-  const fetchWeeklyProgress = async () => {
-    const progressData = await getWeeklyProgress(userData.userId);
-    setWeeklyProgress(progressData.reverse());
-  };
-
-  useEffect(() => {
-    fetchWeeklyProgress();
-  }, [userData.userId]);
-
   const generateData = () => {
-    return weeklyProgress.map((day, index) => {
+    return weeklyProgressData.reverse().map((day, index) => {
       return {
         x: getPastWeekDays(currentDay)[index],
         y: day,

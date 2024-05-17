@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useToast } from "react-native-toast-notifications";
 import { useCreateUser, useSignIn } from "../../hooks/useAuth";
 import { validatePassword, validateEmail } from "../../utils/validation";
 import { useAuth } from "../../store/auth-context";
@@ -22,6 +23,8 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const toast = useToast();
+
   const { createNewUser } = useCreateUser();
   const { signInUser } = useSignIn();
 
@@ -38,17 +41,55 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   };
 
   const handleSignup = async () => {
-    const userData = await createNewUser({ email, password });
-    if (userData?.token && userData?.userId) {
-      authenticate(userData);
-    }
+    const userData = await createNewUser(
+      { email, password },
+      {
+        onSuccess: () => {
+          if (userData?.token && userData?.userId) {
+            authenticate(userData);
+          } else {
+            toast.show("Signup failed", {
+              type: "danger",
+              placement: "top",
+              duration: 4000,
+            });
+          }
+        },
+        onError: () => {
+          toast.show("Signup failed", {
+            type: "danger",
+            placement: "top",
+            duration: 4000,
+          });
+        },
+      }
+    );
   };
 
   const handleSignin = async () => {
-    const userData = await signInUser({ email, password });
-    if (userData?.token && userData?.userId) {
-      authenticate(userData);
-    }
+    const userData = await signInUser(
+      { email, password },
+      {
+        onSuccess: () => {
+          if (userData?.token && userData?.userId) {
+            authenticate(userData);
+          } else {
+            toast.show("Signin failed", {
+              type: "danger",
+              placement: "top",
+              duration: 4000,
+            });
+          }
+        },
+        onError: () => {
+          toast.show("Signin failed", {
+            type: "danger",
+            placement: "top",
+            duration: 4000,
+          });
+        },
+      }
+    );
   };
 
   const handlePasswordChange = (text: string) => {
@@ -87,17 +128,15 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
 
   const handleAuth = () => {
     const passwordValidation = validatePassword(password);
-    setPasswordError(passwordValidation);
-
     const emailValidation = validateEmail(email);
+
+    setPasswordError(passwordValidation);
     setEmailError(emailValidation);
 
-    if (isOnLogin) {
-      if (!passwordError && !emailError) {
+    if (!passwordValidation && !emailValidation) {
+      if (isOnLogin) {
         handleSignin();
-      }
-    } else {
-      if (!passwordError && !emailError) {
+      } else {
         handleSignup();
       }
     }

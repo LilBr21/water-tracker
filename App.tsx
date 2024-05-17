@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView, View } from "react-native";
+import { ToastProvider } from "react-native-toast-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
 import { DataContextProvider } from "./src/store/data-context";
@@ -61,16 +62,18 @@ export default function App() {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthContextProvider>
-        <DataContextProvider>
-          <SafeAreaView style={styles.container}>
-            <StatusBar style="auto" />
-            <Navigation />
-          </SafeAreaView>
-        </DataContextProvider>
-      </AuthContextProvider>
-    </QueryClientProvider>
+    <ToastProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthContextProvider>
+          <DataContextProvider>
+            <SafeAreaView style={styles.container}>
+              <StatusBar style="auto" />
+              <Navigation />
+            </SafeAreaView>
+          </DataContextProvider>
+        </AuthContextProvider>
+      </QueryClientProvider>
+    </ToastProvider>
   );
 }
 

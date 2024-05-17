@@ -13,8 +13,8 @@ export const createUser = async (email: string, password: string) => {
         const userId = response.data.localId;
         const token = response.data.idToken;
         return { token, userId };
-    } catch (error: any) {
-        console.log(error.response.status)
+    } catch (error) {
+        throw new Error('Signup failed');
     }
 };
 
@@ -31,9 +31,7 @@ export const signIn = async (email: string, password: string) => {
             const userId = response.data.localId;
             const token = response.data.idToken;
             return { token, userId }
-        } catch (error: any) {
-            if (error.response.status === 400) {
-                console.log("Invalid email or password");
-            } 
+        } catch (error) {
+            throw new Error('Signin failed');
         }
 };

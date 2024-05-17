@@ -18,7 +18,7 @@ export const createUser = async (email: string, password: string) => {
     }
 };
 
-export const signInUser = async (email: string, password: string) => {
+export const signIn = async (email: string, password: string) => {
     
         try {
             const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, 

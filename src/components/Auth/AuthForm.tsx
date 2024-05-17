@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { createUser, signInUser } from "../../api/auth";
+import { useCreateUser, useSignIn } from "../../hooks/useAuth";
 import { validatePassword, validateEmail } from "../../utils/validation";
 import { useAuth } from "../../store/auth-context";
 import { Input } from "../../ui/Input";
@@ -22,6 +22,9 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const { createNewUser } = useCreateUser();
+  const { signInUser } = useSignIn();
+
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   const { authenticate } = useAuth();
@@ -35,14 +38,14 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   };
 
   const handleSignup = async () => {
-    const userData = await createUser(email, password);
+    const userData = await createNewUser({ email, password });
     if (userData?.token && userData?.userId) {
       authenticate(userData);
     }
   };
 
   const handleSignin = async () => {
-    const userData = await signInUser(email, password);
+    const userData = await signInUser({ email, password });
     if (userData?.token && userData?.userId) {
       authenticate(userData);
     }

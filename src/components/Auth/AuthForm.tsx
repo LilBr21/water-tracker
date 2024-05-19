@@ -41,55 +41,47 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   };
 
   const handleSignup = async () => {
-    const userData = await createNewUser(
-      { email, password },
-      {
-        onSuccess: () => {
-          if (userData?.token && userData?.userId) {
-            authenticate(userData);
-          } else {
-            toast.show("Signup failed", {
-              type: "danger",
-              placement: "top",
-              duration: 4000,
-            });
-          }
-        },
-        onError: () => {
-          toast.show("Signup failed", {
-            type: "danger",
-            placement: "top",
-            duration: 4000,
-          });
-        },
+    try {
+      const userData = await createNewUser({ email, password });
+
+      if (userData?.token && userData?.userId) {
+        authenticate(userData);
+      } else {
+        toast.show("Signup failed", {
+          type: "danger",
+          placement: "top",
+          duration: 4000,
+        });
       }
-    );
+    } catch (error) {
+      toast.show("Signup failed", {
+        type: "danger",
+        placement: "top",
+        duration: 4000,
+      });
+    }
   };
 
   const handleSignin = async () => {
-    const userData = await signInUser(
-      { email, password },
-      {
-        onSuccess: () => {
-          if (userData?.token && userData?.userId) {
-            authenticate(userData);
-          } else {
-            toast.show("Signin failed", {
-              type: "danger",
-              placement: "top",
-              duration: 4000,
-            });
-          }
-        },
-        onError: () => {
-          toast.show("Signin failed", {
-            type: "danger",
-            placement: "top",
-            duration: 4000,
-          });
-        },
+    try {
+      const userData = await signInUser({ email, password });
+
+      if (userData?.token && userData?.userId) {
+        authenticate(userData);
+      } else {
+        toast.show("Signin failed", {
+          type: "danger",
+          placement: "top",
+          duration: 4000,
+        });
       }
-    );
+    } catch (error) {
+      toast.show("Signin failed", {
+        type: "danger",
+        placement: "top",
+        duration: 4000,
+      });
+    }
   };
 
   const handlePasswordChange = (text: string) => {

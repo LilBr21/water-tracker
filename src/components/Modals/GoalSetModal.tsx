@@ -28,26 +28,14 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
 
   const handleSaveGoal = async () => {
     try {
-      await setUserGoal(
-        { goal: chosenAmmount, userId: userData.userId },
-        {
-          onSuccess: () => {
-            toast.show("Goal set!", {
-              type: "success",
-              placement: "top",
-              duration: 4000,
-            });
-            refetchGoal();
-          },
-          onError: () => {
-            toast.show("Failed to set goal", {
-              type: "danger",
-              placement: "top",
-              duration: 4000,
-            });
-          },
-        }
-      );
+      await setUserGoal({ goal: chosenAmmount, userId: userData.userId });
+
+      toast.show("Goal set!", {
+        type: "success",
+        placement: "top",
+        duration: 4000,
+      });
+      refetchGoal();
     } catch (error) {
       toast.show("Failed to set goal", {
         type: "danger",

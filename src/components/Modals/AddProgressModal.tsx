@@ -33,33 +33,21 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
     const totalDailyProgress = drankToday + chosenAmmount;
 
     try {
-      await updateDailyProgress(
-        {
-          userId: userData.userId,
-          date,
-          progress: totalDailyProgress,
-        },
-        {
-          onSuccess: () => {
-            refetchDailyProgress();
-            onClose();
-          },
-          onError: () => {
-            toast.show("Failed to update progress", {
-              type: "danger",
-              placement: "top",
-              duration: 4000,
-            });
-            onClose();
-          },
-        }
-      );
+      await updateDailyProgress({
+        userId: userData.userId,
+        date,
+        progress: totalDailyProgress,
+      });
+
+      refetchDailyProgress();
     } catch (error) {
-      toast.show("An error occurred while updating progress", {
+      toast.show("Failed to update progress", {
         type: "danger",
         placement: "top",
         duration: 4000,
       });
+    } finally {
+      onClose();
     }
   };
 

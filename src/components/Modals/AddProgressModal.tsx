@@ -1,6 +1,7 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
+import { useToast } from "react-native-toast-notifications";
 import { format } from "date-fns";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
@@ -20,6 +21,8 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const { refetchDailyProgress, dailyProgress } = useData();
   const { updateProgress: updateDailyProgress } = useUpdateDailyProgress();
 
+  const toast = useToast();
+
   const handleSetProgress = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
@@ -30,15 +33,33 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
     const totalDailyProgress = drankToday + chosenAmmount;
 
     try {
-      await updateDailyProgress({
-        userId: userData.userId,
-        date,
-        progress: totalDailyProgress,
-      });
-      refetchDailyProgress();
-      onClose();
+      await updateDailyProgress(
+        {
+          userId: userData.userId,
+          date,
+          progress: totalDailyProgress,
+        },
+        {
+          onSuccess: () => {
+            refetchDailyProgress();
+            onClose();
+          },
+          onError: () => {
+            toast.show("Failed to update progress", {
+              type: "danger",
+              placement: "top",
+              duration: 4000,
+            });
+            onClose();
+          },
+        }
+      );
     } catch (error) {
-      console.error("Error updating progress:", error);
+      toast.show("An error occurred while updating progress", {
+        type: "danger",
+        placement: "top",
+        duration: 4000,
+      });
     }
   };
 

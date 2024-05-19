@@ -1,6 +1,7 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
+import { useToast } from "react-native-toast-notifications";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
@@ -19,14 +20,43 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const { refetchGoal } = useData();
   const { setUserGoal } = useSetGoal();
 
+  const toast = useToast();
+
   const handleSetGoal = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
 
   const handleSaveGoal = async () => {
-    await setUserGoal({ goal: chosenAmmount, userId: userData.userId });
-    refetchGoal();
-    onClose();
+    try {
+      await setUserGoal(
+        { goal: chosenAmmount, userId: userData.userId },
+        {
+          onSuccess: () => {
+            toast.show("Goal set!", {
+              type: "success",
+              placement: "top",
+              duration: 4000,
+            });
+            refetchGoal();
+          },
+          onError: () => {
+            toast.show("Failed to set goal", {
+              type: "danger",
+              placement: "top",
+              duration: 4000,
+            });
+          },
+        }
+      );
+    } catch (error) {
+      toast.show("Failed to set goal", {
+        type: "danger",
+        placement: "top",
+        duration: 4000,
+      });
+    } finally {
+      onClose();
+    }
   };
 
   return (

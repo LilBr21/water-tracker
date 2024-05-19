@@ -1,4 +1,4 @@
-import { View, Dimensions, StyleSheet } from "react-native";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { useEffect, useState } from "react";
 import {
   VictoryPie,
@@ -15,12 +15,11 @@ interface IProps {
 
 export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
   const [chartData, setChartData] = useState(0);
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   useEffect(() => {
     const percentage = (drankAmount / dailyGoal) * 100;
     setChartData(percentage);
-    console.log(chartData);
   }, [drankAmount, dailyGoal]);
 
   return (

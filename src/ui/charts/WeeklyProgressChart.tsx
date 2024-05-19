@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { VictoryChart, VictoryBar } from "victory-native";
 import { getDay, format, subDays, set } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getDailyProgress } from "../../api/trackerData";
-import { useGetDailyProgress } from "../../hooks/useData";
+import { useData } from "../../store/data-context";
 import { colors } from "../constants/colors";
 
 export const WeeklyProgressChart = () => {
@@ -14,6 +13,7 @@ export const WeeklyProgressChart = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const { userData } = useAuth();
+  const { dailyProgress } = useData();
 
   const currentDayNumber = getDay(new Date());
   const currentDay = getCurrentWeekDay(currentDayNumber);
@@ -54,13 +54,13 @@ export const WeeklyProgressChart = () => {
 
   useEffect(() => {
     handleSetWeeklyProgress();
-  }, []);
+  }, [dailyProgress]);
 
   const generateData = () => {
     if (!weeklyProgress) {
       return [];
     }
-    return weeklyProgress.reverse().map((day, index) => {
+    return weeklyProgress.map((day, index) => {
       return {
         x: getPastWeekDays(currentDay)[index],
         y: day,

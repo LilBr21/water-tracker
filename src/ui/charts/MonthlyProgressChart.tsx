@@ -1,43 +1,41 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { VictoryChart, VictoryBar } from "victory-native";
-import { getDay, format, subDays, set } from "date-fns";
+import { format, subDays } from "date-fns";
 import { useAuth } from "../../store/auth-context";
-import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getDailyProgress } from "../../api/trackerData";
 import { useData } from "../../store/data-context";
 import { colors } from "../constants/colors";
 
-export const WeeklyProgressChart = () => {
-  const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);
+export const MonthlyProgressChart = () => {
+  const [monthlyProgress, setMonthlyProgress] = useState<null | any[]>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const { userData } = useAuth();
   const { dailyProgress } = useData();
 
-  const currentDayNumber = getDay(new Date());
-  const currentDay = getCurrentWeekDay(currentDayNumber);
+  const today = new Date();
+  const dayOfTheMonth = parseInt(format(today, "d"));
 
-  const getWeeklyProgress = async () => {
+  const getMonthlyProgress = async () => {
     try {
       setIsLoading(true);
-      const today = new Date();
-      const weekDays = [];
+      const monthDays = [];
 
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < dayOfTheMonth; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() - i);
-        weekDays.push(format(date, "dd-MM-yyyy"));
+        monthDays.push(format(date, "dd-MM-yyyy"));
       }
 
-      const weeklyProgressData = [];
+      const monthlyProgressData = [];
 
-      for (const day of weekDays) {
+      for (const day of monthDays) {
         const progress = await getDailyProgress(userData.userId, day);
-        weeklyProgressData.push(progress);
+        monthlyProgressData.push(progress);
       }
 
-      return weeklyProgressData;
+      return monthlyProgressData.reverse();
     } catch (error) {
       throw new Error(`Failed to fetch weekly progress, ${error}`);
     } finally {
@@ -45,24 +43,24 @@ export const WeeklyProgressChart = () => {
     }
   };
 
-  const handleSetWeeklyProgress = async () => {
-    const weeklyProgressData = await getWeeklyProgress();
-    if (weeklyProgressData && weeklyProgressData.length > 0) {
-      setWeeklyProgress(weeklyProgressData);
+  const handleSetMonthlyProgress = async () => {
+    const monthlyProgressData = await getMonthlyProgress();
+    if (monthlyProgressData && monthlyProgressData.length > 0) {
+      setMonthlyProgress(monthlyProgressData);
     }
   };
 
   useEffect(() => {
-    handleSetWeeklyProgress();
+    handleSetMonthlyProgress();
   }, [dailyProgress]);
 
   const generateData = () => {
-    if (!weeklyProgress) {
+    if (!monthlyProgress) {
       return [];
     }
-    return weeklyProgress.map((day, index) => {
+    return monthlyProgress.map((day, index) => {
       return {
-        x: getPastWeekDays(currentDay)[index],
+        x: index + 1,
         y: day,
         label: day,
       };
@@ -70,8 +68,8 @@ export const WeeklyProgressChart = () => {
   };
 
   const todayFormatted = format(new Date(), "dd.MM");
-  const sixDaysAgo = subDays(new Date(), 6);
-  const sixDaysAgoFormatted = format(sixDaysAgo, "dd.MM");
+  const monthStart = subDays(new Date(), dayOfTheMonth - 1);
+  const monthStartFormatted = format(monthStart, "dd.MM");
 
   const chartTheme = {
     axis: {
@@ -98,9 +96,9 @@ export const WeeklyProgressChart = () => {
 
   return (
     <View>
-      <Text style={styles.text}>Your last week statistics:</Text>
+      <Text style={styles.text}>Your current month statistics:</Text>
       <Text style={styles.date}>
-        {sixDaysAgoFormatted} - {todayFormatted}
+        {monthStartFormatted} - {todayFormatted}
       </Text>
       <View>
         <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>

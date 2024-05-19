@@ -21,7 +21,6 @@ export const getCurrentWeekDay = (number: number) => {
 }
 
 export const  getPastWeekDays = (today: string) => {
-    console.log(today)
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const currentDayIndex = daysOfWeek.indexOf(today);
     const reorderedDays = [];

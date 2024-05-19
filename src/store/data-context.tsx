@@ -1,12 +1,5 @@
-import {
-  createContext,
-  useState,
-  ReactNode,
-  useContext,
-  useEffect,
-} from "react";
+import { createContext, ReactNode, useContext } from "react";
 import { format } from "date-fns";
-import { getUserGoal, getDailyProgress } from "../api/trackerData";
 import { useGetUserGoal, useGetDailyProgress } from "../hooks/useData";
 import { useAuth } from "./auth-context";
 

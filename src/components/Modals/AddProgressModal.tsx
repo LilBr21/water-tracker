@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: "100%",
-    padding: 20,
+    padding: 40,
   },
   text: {
     color: colors.lightPrimary,

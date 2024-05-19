@@ -27,12 +27,10 @@ export const signIn = async (email: string, password: string) => {
                 password,
                 returnSecureToken: true,
             });
-            console.log(response.data.localId, response.data.idToken)
             const userId = response.data.localId;
             const token = response.data.idToken;
             return { token, userId }
         } catch (error) {
-            console.log('here??')
             throw new Error('Signin failed');
         }
 };

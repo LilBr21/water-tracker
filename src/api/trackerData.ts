@@ -21,7 +21,6 @@ export const getUserGoal = async (userId: string) => {
 }
 
 export const updateDailyProgress = async (userId: string, date: string, progress: number) => {
-    console.log(userId, date, progress)
     try {
         axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}.json`, {
             progress

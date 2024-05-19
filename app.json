@@ -3,7 +3,6 @@
     "name": "WaterTracker",
     "slug": "WaterTracker",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -31,6 +30,12 @@
         "expo-font",
         {
           "fonts": ["./src/assets/fonts/Pacifico-Regular.ttf"]
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
         }
       ]
     ]

@@ -27,7 +27,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "react-native-toast-notifications": "^3.4.0",
-    "victory-native": "^37.0.2"
+    "victory-native": "^37.0.2",
+    "expo-screen-orientation": "~6.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

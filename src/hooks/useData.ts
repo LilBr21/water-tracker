@@ -30,35 +30,6 @@ export const useGetDailyProgress = (userId: string, date: string) => {
     return { dailyProgress, isProgressLoading, error, refetchDailyProgress };
 }
 
-export const useGetWeeklyProgress = (userId: string) => {
-    const today = new Date();
-    const weekDays = [];
-
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        weekDays.push(format(date, 'dd-MM-yyyy'));
-    }
-    
-    const weeklyProgressData = [];
-
-    for (const day of weekDays) {
-        const { data: progress = 0, error } = useQuery({
-            queryKey: ['dailyProgress', userId, day], 
-            queryFn: () => getDailyProgress(userId, day),
-            initialData: 0, 
-        });
-
-        if (error) {
-            console.error('Error fetching daily progress:', error);
-        }
-
-        weeklyProgressData.push(progress);
-    }
-
-    return { weeklyProgressData };
-};
-
 interface IUpdateDailyProgressProps {
     userId: string;
     date: string;

@@ -1,23 +1,66 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { VictoryChart, VictoryBar } from "victory-native";
-import { getDay, format, subDays } from "date-fns";
+import { getDay, format, subDays, set } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
-import { getWeeklyProgress } from "../../api/trackerData";
-import { useGetWeeklyProgress } from "../../hooks/useData";
+import { getDailyProgress } from "../../api/trackerData";
+import { useGetDailyProgress } from "../../hooks/useData";
 import { colors } from "../constants/colors";
 
 export const WeeklyProgressChart = () => {
+  const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const { userData } = useAuth();
-  const { weeklyProgressData } = useGetWeeklyProgress(userData.userId);
-  console.log(weeklyProgressData);
 
   const currentDayNumber = getDay(new Date());
   const currentDay = getCurrentWeekDay(currentDayNumber);
 
+  const getWeeklyProgress = async () => {
+    try {
+      setIsLoading(true);
+      const today = new Date();
+      const weekDays = [];
+
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        weekDays.push(format(date, "dd-MM-yyyy"));
+      }
+
+      const weeklyProgressData = [];
+
+      for (const day of weekDays) {
+        const progress = await getDailyProgress(userData.userId, day);
+        weeklyProgressData.push(progress);
+      }
+
+      return weeklyProgressData;
+    } catch (error) {
+      throw new Error(`Failed to fetch weekly progress, ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSetWeeklyProgress = async () => {
+    const weeklyProgressData = await getWeeklyProgress();
+    if (weeklyProgressData && weeklyProgressData.length > 0) {
+      setWeeklyProgress(weeklyProgressData);
+    }
+  };
+
+  useEffect(() => {
+    handleSetWeeklyProgress();
+  }, []);
+
   const generateData = () => {
-    return weeklyProgressData.reverse().map((day, index) => {
+    if (!weeklyProgress) {
+      return [];
+    }
+    return weeklyProgress.reverse().map((day, index) => {
       return {
         x: getPastWeekDays(currentDay)[index],
         y: day,
@@ -48,6 +91,10 @@ export const WeeklyProgressChart = () => {
       },
     },
   };
+
+  if (isLoading) {
+    return <ActivityIndicator size="large" color={colors.lightPrimary} />;
+  }
 
   return (
     <View>

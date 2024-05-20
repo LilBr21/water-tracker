@@ -6,6 +6,7 @@ import {
   VictoryLabel,
   VictoryAxis,
 } from "victory-native";
+import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { colors } from "../constants/colors";
 
 interface IProps {
@@ -15,7 +16,11 @@ interface IProps {
 
 export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
   const [chartData, setChartData] = useState(0);
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  console.log(windowHeight);
+
+  const { currentOrientation } = useOrientation();
+  const isPortrait = currentOrientation === Orientation.PORTRAIT;
 
   useEffect(() => {
     const percentage = (drankAmount / dailyGoal) * 100;
@@ -24,17 +29,20 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
 
   return (
     <View style={styles.container}>
-      <VictoryChart height={windowWidth - 40} width={windowWidth - 40}>
+      <VictoryChart
+        height={isPortrait ? windowWidth - 40 : windowHeight - 200}
+        width={isPortrait ? windowWidth - 40 : windowHeight - 200}
+      >
         <VictoryPie
           standalone={false}
           animate={{ duration: 1000 }}
-          width={windowWidth - 40}
-          height={windowWidth - 40}
+          // width={isPortrait ? windowWidth - 40 : windowHeight - 60}
+          // height={isPortrait ? windowWidth - 40 : windowHeight - 60}
           data={[
             { x: 1, y: chartData },
             { x: 2, y: 100 - chartData },
           ]}
-          innerRadius={120}
+          innerRadius={isPortrait ? 120 : 55}
           cornerRadius={0}
           labels={() => null}
           style={{
@@ -59,11 +67,11 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
         <VictoryLabel
           textAnchor="middle"
           verticalAnchor="middle"
-          x={200}
-          y={200}
+          x={isPortrait ? 200 : 112}
+          y={isPortrait ? 200 : 112}
           text={`${Math.round(chartData)}%`}
           style={{
-            fontSize: 45,
+            fontSize: isPortrait ? 40 : 32,
             fill: `${
               chartData > 100 ? colors.successPrimary : colors.actionPrimary
             }`,
@@ -76,7 +84,6 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

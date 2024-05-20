@@ -4,6 +4,7 @@ import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useToast } from "react-native-toast-notifications";
 import { useCreateUser, useSignIn } from "../../hooks/useAuth";
+import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { validatePassword, validateEmail } from "../../utils/validation";
 import { useAuth } from "../../store/auth-context";
 import { Input } from "../../ui/Input";
@@ -22,6 +23,9 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const { currentOrientation } = useOrientation();
+  const isPortrait = currentOrientation === Orientation.PORTRAIT;
 
   const toast = useToast();
 
@@ -135,13 +139,13 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles().container}>
       {isOnLogin ? (
         <NewAccountButton handleAuthModeSwitch={handleAuthModeSwitch} />
       ) : (
         <ExistingAccountButton handleAuthModeSwitch={handleAuthModeSwitch} />
       )}
-      <View style={styles.contentContainer}>
+      <View style={styles().contentContainer}>
         <MainTitle />
         <Input
           placeholder="email"
@@ -164,12 +168,12 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
           isError={!!passwordError}
           errorText={passwordError}
         />
-        <View style={styles.buttonContainer}>
+        <View style={styles(isPortrait).buttonContainer}>
           <Button
             title={isOnLogin ? "Sign in" : "Sign up"}
             onPress={handleAuth}
             width={ButtonWidth.Full}
-            size={ButtonSizes.M}
+            size={isPortrait ? ButtonSizes.M : ButtonSizes.S}
             color={colors.actionPrimary}
             textColor={colors.lightPrimary}
           />
@@ -179,18 +183,19 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#102C57",
-  },
-  contentContainer: {
-    flex: 5,
-    alignItems: "center",
-  },
-  buttonContainer: {
-    width: "100%",
-    paddingHorizontal: 40,
-    paddingTop: 24,
-  },
-});
+const styles = (isPortrait?: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#102C57",
+    },
+    contentContainer: {
+      flex: 5,
+      alignItems: "center",
+    },
+    buttonContainer: {
+      width: "100%",
+      paddingHorizontal: isPortrait ? 40 : 46,
+      paddingTop: 20,
+    },
+  });

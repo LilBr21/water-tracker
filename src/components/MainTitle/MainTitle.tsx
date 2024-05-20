@@ -15,13 +15,13 @@ export const MainTitle = ({ isOnHome = false }: IProps) => {
 
   const { currentOrientation } = useOrientation();
 
-  const authImgWSize = currentOrientation === Orientation.PORTRAIT ? 120 : 64;
+  const authImgSize = currentOrientation === Orientation.PORTRAIT ? 120 : 64;
 
   return (
     <View style={styles(isOnHome, fontsLoaded, currentOrientation).container}>
       <WaterDrop
-        width={isOnHome ? 64 : authImgWSize}
-        height={isOnHome ? 64 : authImgWSize}
+        width={isOnHome ? 64 : authImgSize}
+        height={isOnHome ? 64 : authImgSize}
       />
       <Text style={styles(isOnHome, fontsLoaded, currentOrientation).text}>
         Water Tracker

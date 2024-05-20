@@ -17,7 +17,6 @@ interface IProps {
 export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
   const [chartData, setChartData] = useState(0);
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  console.log(windowHeight);
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
@@ -36,8 +35,6 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
         <VictoryPie
           standalone={false}
           animate={{ duration: 1000 }}
-          // width={isPortrait ? windowWidth - 40 : windowHeight - 60}
-          // height={isPortrait ? windowWidth - 40 : windowHeight - 60}
           data={[
             { x: 1, y: chartData },
             { x: 2, y: 100 - chartData },

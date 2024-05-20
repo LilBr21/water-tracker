@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { VictoryChart, VictoryBar } from "victory-native";
-import { getDay, format, subDays, set } from "date-fns";
+import { getDay, format, subDays } from "date-fns";
+import {
+  Gesture,
+  GestureDetector,
+  Directions,
+} from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getDailyProgress } from "../../api/trackerData";
@@ -11,9 +17,41 @@ import { colors } from "../constants/colors";
 export const WeeklyProgressChart = () => {
   const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [pastWeeks, setPastWeeks] = useState(0);
+  const [toFormatted, setToFormatted] = useState("");
+  const [fromFormatted, setFromFormatted] = useState("");
 
   const { userData } = useAuth();
   const { dailyProgress } = useData();
+
+  const handlePreviousWeek = () => {
+    setPastWeeks((prevState) => prevState + 1);
+  };
+
+  const handleNextWeek = () => {
+    setPastWeeks((prevState) => prevState - 1);
+  };
+
+  const flingRightGesture = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .onEnd(() => {
+      runOnJS(handlePreviousWeek)();
+    });
+
+  const flingLeftGesture = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onEnd(() => {
+      if (pastWeeks > 0) {
+        runOnJS(handleNextWeek)();
+      } else {
+        return;
+      }
+    });
+
+  const combinedGestures = Gesture.Simultaneous(
+    flingRightGesture,
+    flingLeftGesture
+  );
 
   const currentDayNumber = getDay(new Date());
   const currentDay = getCurrentWeekDay(currentDayNumber);
@@ -26,8 +64,13 @@ export const WeeklyProgressChart = () => {
 
       for (let i = 0; i < 7; i++) {
         const date = new Date(today);
-        date.setDate(today.getDate() - i);
+        if (pastWeeks > 0) {
+          date.setDate(today.getDate() - 7 * pastWeeks - i);
+        } else {
+          date.setDate(today.getDate() - i);
+        }
         weekDays.push(format(date, "dd-MM-yyyy"));
+        console.log(weekDays);
       }
 
       const weeklyProgressData = [];
@@ -52,9 +95,29 @@ export const WeeklyProgressChart = () => {
     }
   };
 
+  const handleSetFormattedDate = () => {
+    if (pastWeeks > 0) {
+      const to = subDays(new Date(), 7 * pastWeeks);
+      const toDateFormatted = format(to, "dd.MM");
+      const from = subDays(to, 6);
+      const fromDateFormatted = format(from, "dd.MM");
+      setToFormatted(toDateFormatted);
+      setFromFormatted(fromDateFormatted);
+    } else {
+      const to = new Date();
+      const toFormatted = format(to, "dd.MM");
+      const from = subDays(to, 6);
+      const fromFormatted = format(from, "dd.MM");
+      setToFormatted(toFormatted);
+      setFromFormatted(fromFormatted);
+    }
+  };
+
   useEffect(() => {
     handleSetWeeklyProgress();
-  }, [dailyProgress]);
+    handleSetFormattedDate();
+    console.log(pastWeeks);
+  }, [dailyProgress, pastWeeks]);
 
   const generateData = () => {
     if (!weeklyProgress) {
@@ -68,10 +131,6 @@ export const WeeklyProgressChart = () => {
       };
     });
   };
-
-  const todayFormatted = format(new Date(), "dd.MM");
-  const sixDaysAgo = subDays(new Date(), 6);
-  const sixDaysAgoFormatted = format(sixDaysAgo, "dd.MM");
 
   const chartTheme = {
     axis: {
@@ -97,23 +156,25 @@ export const WeeklyProgressChart = () => {
   }
 
   return (
-    <View>
-      <Text style={styles.text}>Your last week statistics:</Text>
-      <Text style={styles.date}>
-        {sixDaysAgoFormatted} - {todayFormatted}
-      </Text>
+    <GestureDetector gesture={combinedGestures}>
       <View>
-        <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
-          <VictoryBar
-            data={generateData().reverse()}
-            style={{
-              data: { fill: colors.actionPrimary },
-              labels: { fill: colors.lightPrimary },
-            }}
-          />
-        </VictoryChart>
+        <Text style={styles.text}>Your week statistics:</Text>
+        <Text style={styles.date}>
+          {fromFormatted} - {toFormatted}
+        </Text>
+        <View>
+          <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
+            <VictoryBar
+              data={generateData().reverse()}
+              style={{
+                data: { fill: colors.actionPrimary },
+                labels: { fill: colors.lightPrimary },
+              }}
+            />
+          </VictoryChart>
+        </View>
       </View>
-    </View>
+    </GestureDetector>
   );
 };
 

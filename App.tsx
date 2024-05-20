@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView, View } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toast-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthContextProvider, useAuth } from "./src/store/auth-context";
@@ -67,8 +68,10 @@ export default function App() {
         <AuthContextProvider>
           <DataContextProvider>
             <SafeAreaView style={styles.container}>
-              <StatusBar style="auto" />
-              <Navigation />
+              <GestureHandlerRootView>
+                <StatusBar style="auto" />
+                <Navigation />
+              </GestureHandlerRootView>
             </SafeAreaView>
           </DataContextProvider>
         </AuthContextProvider>

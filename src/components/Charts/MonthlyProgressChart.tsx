@@ -112,8 +112,8 @@ export const MonthlyProgressChart = () => {
     return monthlyProgress.map((day, index) => {
       return {
         x: index + 1,
-        y: day,
-        label: day,
+        y: day === 0 ? "" : day,
+        label: day === 0 ? "" : day,
       };
     });
   };

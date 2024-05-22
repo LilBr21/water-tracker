@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useState } from "react";
 import { Button } from "../../ui/Button";
-import { DailyProgressChart } from "../../ui/charts/DailyProgressChart";
+import { DailyProgressChart } from "../Charts/DailyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { AddProgressModal } from "../Modals/AddProgressModal";
 import { useData } from "../../store/data-context";

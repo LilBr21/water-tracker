@@ -5,7 +5,7 @@ import { format, subDays } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getDailyProgress } from "../../api/trackerData";
 import { useData } from "../../store/data-context";
-import { colors } from "../constants/colors";
+import { colors } from "../../ui/constants/colors";
 
 export const MonthlyProgressChart = () => {
   const [monthlyProgress, setMonthlyProgress] = useState<null | any[]>(null);

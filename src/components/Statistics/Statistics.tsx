@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import { WeeklyProgressChart } from "../../ui/charts/WeeklyProgressChart";
-import { MonthlyProgressChart } from "../../ui/charts/MonthlyProgressChart";
+import { WeeklyProgressChart } from "../Charts/WeeklyProgressChart";
+import { MonthlyProgressChart } from "../Charts/MonthlyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 
 export const Statistics = () => {

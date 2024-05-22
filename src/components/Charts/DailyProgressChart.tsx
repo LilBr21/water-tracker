@@ -7,7 +7,7 @@ import {
   VictoryAxis,
 } from "victory-native";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
-import { colors } from "../constants/colors";
+import { colors } from "../../ui/constants/colors";
 
 interface IProps {
   drankAmount: number;

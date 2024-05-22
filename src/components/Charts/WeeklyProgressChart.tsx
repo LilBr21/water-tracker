@@ -12,7 +12,7 @@ import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getDailyProgress } from "../../api/trackerData";
 import { useData } from "../../store/data-context";
-import { colors } from "../constants/colors";
+import { colors } from "../../ui/constants/colors";
 
 export const WeeklyProgressChart = () => {
   const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);

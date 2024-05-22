@@ -70,7 +70,6 @@ export const WeeklyProgressChart = () => {
           date.setDate(today.getDate() - i);
         }
         weekDays.push(format(date, "dd-MM-yyyy"));
-        console.log(weekDays);
       }
 
       const weeklyProgressData = [];
@@ -116,7 +115,6 @@ export const WeeklyProgressChart = () => {
   useEffect(() => {
     handleSetWeeklyProgress();
     handleSetFormattedDate();
-    console.log(pastWeeks);
   }, [dailyProgress, pastWeeks]);
 
   const generateData = () => {

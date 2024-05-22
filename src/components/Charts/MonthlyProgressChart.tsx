@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { VictoryChart, VictoryBar } from "victory-native";
-import { format, subDays } from "date-fns";
+import {
+  Gesture,
+  GestureDetector,
+  Directions,
+} from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
+import { format, subDays, getDaysInMonth } from "date-fns";
 import { useAuth } from "../../store/auth-context";
 import { getDailyProgress } from "../../api/trackerData";
 import { useData } from "../../store/data-context";
@@ -10,21 +16,66 @@ import { colors } from "../../ui/constants/colors";
 export const MonthlyProgressChart = () => {
   const [monthlyProgress, setMonthlyProgress] = useState<null | any[]>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [chosenMonth, setChosenMonth] = useState(
+    parseInt(format(new Date(), "M"))
+  );
+  const [chosenYear, setChosenYear] = useState(
+    parseInt(format(new Date(), "yyyy"))
+  );
 
   const { userData } = useAuth();
   const { dailyProgress } = useData();
 
-  const today = new Date();
-  const dayOfTheMonth = parseInt(format(today, "d"));
+  const handlePreviousMonth = () => {
+    if (chosenMonth - 1 === 0) {
+      setChosenMonth(12);
+      setChosenYear(chosenYear - 1);
+    } else {
+      setChosenMonth(chosenMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (chosenMonth === parseInt(format(new Date(), "M"))) {
+      return;
+    }
+    if (chosenMonth + 1 === 13) {
+      setChosenMonth(1);
+      setChosenYear(chosenYear + 1);
+    } else {
+      setChosenMonth(chosenMonth + 1);
+    }
+  };
+
+  const flingRightGesture = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .onEnd(() => {
+      runOnJS(handlePreviousMonth)();
+    });
+
+  const flingLeftGesture = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onEnd(() => {
+      runOnJS(handleNextMonth)();
+    });
+
+  const combinedGestures = Gesture.Simultaneous(
+    flingRightGesture,
+    flingLeftGesture
+  );
 
   const getMonthlyProgress = async () => {
     try {
       setIsLoading(true);
       const monthDays = [];
 
-      for (let i = 0; i < dayOfTheMonth; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
+      for (
+        let i = 0;
+        i < getDaysInMonth(new Date(chosenYear, chosenMonth - 1));
+        i++
+      ) {
+        const date = new Date(chosenYear, chosenMonth - 1);
+        date.setDate(i + 1);
         monthDays.push(format(date, "dd-MM-yyyy"));
       }
 
@@ -35,7 +86,7 @@ export const MonthlyProgressChart = () => {
         monthlyProgressData.push(progress);
       }
 
-      return monthlyProgressData.reverse();
+      return monthlyProgressData;
     } catch (error) {
       throw new Error(`Failed to fetch weekly progress, ${error}`);
     } finally {
@@ -52,7 +103,7 @@ export const MonthlyProgressChart = () => {
 
   useEffect(() => {
     handleSetMonthlyProgress();
-  }, [dailyProgress]);
+  }, [dailyProgress, chosenMonth, chosenYear]);
 
   const generateData = () => {
     if (!monthlyProgress) {
@@ -66,10 +117,6 @@ export const MonthlyProgressChart = () => {
       };
     });
   };
-
-  const todayFormatted = format(new Date(), "dd.MM");
-  const monthStart = subDays(new Date(), dayOfTheMonth - 1);
-  const monthStartFormatted = format(monthStart, "dd.MM");
 
   const chartTheme = {
     axis: {
@@ -95,23 +142,25 @@ export const MonthlyProgressChart = () => {
   }
 
   return (
-    <View>
-      <Text style={styles.text}>Your current month statistics:</Text>
-      <Text style={styles.date}>
-        {monthStartFormatted} - {todayFormatted}
-      </Text>
+    <GestureDetector gesture={combinedGestures}>
       <View>
-        <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
-          <VictoryBar
-            data={generateData().reverse()}
-            style={{
-              data: { fill: colors.actionPrimary },
-              labels: { fill: colors.lightPrimary },
-            }}
-          />
-        </VictoryChart>
+        <Text style={styles.text}>Your current month statistics:</Text>
+        <Text style={styles.date}>
+          {chosenMonth} {chosenYear}
+        </Text>
+        <View>
+          <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
+            <VictoryBar
+              data={generateData()}
+              style={{
+                data: { fill: colors.actionPrimary },
+                labels: { fill: colors.lightPrimary },
+              }}
+            />
+          </VictoryChart>
+        </View>
       </View>
-    </View>
+    </GestureDetector>
   );
 };
 

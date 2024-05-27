@@ -3,6 +3,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { format } from "date-fns";
+import CoffeeCup from "../../assets/coffee-cup.svg";
+import WaterGlass from "../../assets/water-glass.svg";
+import Juice from "../../assets/juice.svg";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
@@ -16,8 +19,16 @@ interface IProps {
   onClose: () => void;
 }
 
+export enum DrinkType {
+  WATER = "water",
+  JUICE = "juice",
+  COFFEE = "coffee",
+}
+
 export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
+  const [chosenDrink, setChosenDrink] = useState(DrinkType.WATER);
+
   const { userData } = useAuth();
   const { refetchDailyProgress, dailyProgress } = useData();
   const { updateProgress: updateDailyProgress } = useUpdateDailyProgress();
@@ -27,13 +38,30 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
 
   const toast = useToast();
 
+  const handleChooseDrink = (drink: DrinkType) => {
+    setChosenDrink(drink);
+  };
+
   const handleSetProgress = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
 
+  const getDrankToday = () => {
+    switch (chosenDrink) {
+      case DrinkType.WATER:
+        return dailyProgress?.water;
+      case DrinkType.JUICE:
+        return dailyProgress?.juice;
+      case DrinkType.COFFEE:
+        return dailyProgress?.coffee;
+      default:
+        return 0;
+    }
+  };
+
   const handleSaveProgress = async () => {
     const date = format(new Date(), "dd-MM-yyyy");
-    const drankToday = dailyProgress ?? 0;
+    const drankToday = getDrankToday();
     const totalDailyProgress = drankToday + chosenAmmount;
 
     try {
@@ -41,6 +69,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
         userId: userData.userId,
         date,
         progress: totalDailyProgress,
+        drink_type: chosenDrink,
       });
 
       refetchDailyProgress();
@@ -73,8 +102,43 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           />
         </TouchableOpacity>
         <Text style={styles(isPortrait).text}>Add daily progress.</Text>
+        <View style={styles(isPortrait).drinkButtonsContainer}>
+          <View>
+            <TouchableOpacity
+              style={
+                styles(isPortrait, chosenDrink === DrinkType.WATER).drinkButton
+              }
+              onPress={() => handleChooseDrink(DrinkType.WATER)}
+            >
+              <WaterGlass width={52} height={52} />
+            </TouchableOpacity>
+            <Text style={styles(isPortrait).drinkButtonText}>Water</Text>
+          </View>
+          <View>
+            <TouchableOpacity
+              style={
+                styles(isPortrait, chosenDrink === DrinkType.JUICE).drinkButton
+              }
+              onPress={() => handleChooseDrink(DrinkType.JUICE)}
+            >
+              <Juice width={52} height={52} />
+            </TouchableOpacity>
+            <Text style={styles(isPortrait).drinkButtonText}>Juice</Text>
+          </View>
+          <View>
+            <TouchableOpacity
+              style={
+                styles(isPortrait, chosenDrink === DrinkType.COFFEE).drinkButton
+              }
+              onPress={() => handleChooseDrink(DrinkType.COFFEE)}
+            >
+              <CoffeeCup width={52} height={52} />
+            </TouchableOpacity>
+            <Text style={styles(isPortrait).drinkButtonText}>Coffee</Text>
+          </View>
+        </View>
         <Text style={styles(isPortrait).text}>
-          How much water did you drink?
+          How much {chosenDrink} did you drink?
         </Text>
         <View style={styles(isPortrait).inputContainer}>
           <Input
@@ -97,7 +161,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   );
 };
 
-const styles = (isPortrait?: boolean) =>
+const styles = (isPortrait?: boolean, isDrinkChosen?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -124,5 +188,32 @@ const styles = (isPortrait?: boolean) =>
       paddingVertical: 8,
       width: "100%",
       textAlign: isPortrait ? "left" : "center",
+    },
+    drinkButtonsContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      width: "100%",
+      paddingVertical: 32,
+    },
+    drinkButton: {
+      backgroundColor: isDrinkChosen
+        ? "rgba(254, 250, 246, 0.8)"
+        : "rgba(254, 250, 246, 0.5)",
+      borderColor: colors.lightPrimary,
+      borderWidth: 2,
+      borderRadius: 50,
+      width: 64,
+      height: 64,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 4,
+    },
+    drinkButtonText: {
+      color: colors.lightPrimary,
+      fontSize: 10,
+      textAlign: "center",
     },
   });

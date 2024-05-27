@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../ui/Button";
 import { DailyProgressChart } from "../Charts/DailyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
@@ -9,6 +9,11 @@ import { colors } from "../../ui/constants/colors";
 
 export const Progress = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [drankWater, setDrankWater] = useState(0);
+  const [drankJuice, setDrankJuice] = useState(0);
+  const [drankCoffee, setDrankCoffee] = useState(0);
+  const [drankAmount, setDrankAmount] = useState(0);
+
   const { userGoal, dailyProgress } = useData();
 
   const { currentOrientation } = useOrientation();
@@ -18,20 +23,34 @@ export const Progress = () => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    if (dailyProgress) {
+      setDrankWater(dailyProgress.water);
+      setDrankJuice(dailyProgress.juice);
+      setDrankCoffee(dailyProgress.coffee);
+      setDrankAmount(
+        dailyProgress.water + dailyProgress.juice + dailyProgress.coffee
+      );
+    }
+  }, [dailyProgress]);
+
   return (
     <View>
       <Text style={styles().text}>
-        Your daily goal is {userGoal} ml of water. Stay hydrated!
+        Your daily goal is {userGoal} ml. Stay hydrated!
       </Text>
       <Text style={styles().text}>
         {dailyProgress
-          ? `You've drunk ${dailyProgress} ml of water today.`
+          ? `You've drunk ${drankAmount} ml today.`
           : "You haven't drunk any water today."}
       </Text>
       <View style={styles(isPortrait).mainContentContainer}>
         <View style={styles(isPortrait).chartContainer}>
           <DailyProgressChart
-            drankAmount={dailyProgress ?? 0}
+            drankAmount={drankAmount}
+            drankWater={drankWater}
+            drankJuice={drankJuice}
+            drankCoffee={drankCoffee}
             dailyGoal={userGoal}
           />
         </View>

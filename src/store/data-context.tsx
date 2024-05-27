@@ -2,11 +2,16 @@ import { createContext, ReactNode, useContext } from "react";
 import { format } from "date-fns";
 import { useGetUserGoal, useGetDailyProgress } from "../hooks/useData";
 import { useAuth } from "./auth-context";
+import { DrinkType } from "../components/Modals/AddProgressModal";
 
 export const DataContext = createContext({
   userGoal: 0,
   refetchGoal: () => {},
-  dailyProgress: 0,
+  dailyProgress: {
+    water: 0,
+    juice: 0,
+    coffee: 0,
+  },
   refetchDailyProgress: () => {},
   isGoalLoading: false,
 });

@@ -110,10 +110,11 @@ export const MonthlyProgressChart = () => {
       return [];
     }
     return monthlyProgress.map((day, index) => {
+      const progress = day.water + day.juice + day.coffee;
       return {
         x: index + 1,
-        y: day === 0 ? "" : day,
-        label: day === 0 ? "" : day,
+        y: progress === 0 ? "" : progress,
+        label: progress === 0 ? "" : progress,
       };
     });
   };

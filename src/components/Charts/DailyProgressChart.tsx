@@ -11,20 +11,42 @@ import { colors } from "../../ui/constants/colors";
 
 interface IProps {
   drankAmount: number;
+  drankWater: number;
+  drankJuice: number;
+  drankCoffee: number;
   dailyGoal: number;
 }
 
-export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
-  const [chartData, setChartData] = useState(0);
+export const DailyProgressChart = ({
+  drankAmount,
+  drankWater,
+  drankJuice,
+  drankCoffee,
+  dailyGoal,
+}: IProps) => {
+  const [chartData, setChartData] = useState({
+    water: 0,
+    juice: 0,
+    coffee: 0,
+  });
+  const [drankInTotal, setDrankInTotal] = useState(0);
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
 
   useEffect(() => {
-    const percentage = (drankAmount / dailyGoal) * 100;
-    setChartData(percentage);
-  }, [drankAmount, dailyGoal]);
+    const waterPercentage = (drankWater / dailyGoal) * 100;
+    const juicePercentage = (drankJuice / dailyGoal) * 100;
+    const coffeePercentage = (drankCoffee / dailyGoal) * 100;
+    setChartData({
+      water: waterPercentage,
+      juice: juicePercentage,
+      coffee: coffeePercentage,
+    });
+
+    setDrankInTotal((drankAmount / dailyGoal) * 100);
+  }, [drankAmount, dailyGoal, drankWater, drankJuice, drankCoffee]);
 
   return (
     <View style={styles.container}>
@@ -36,22 +58,16 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
           standalone={false}
           animate={{ duration: 1000 }}
           data={[
-            { x: 1, y: chartData },
-            { x: 2, y: 100 - chartData },
+            { x: 1, y: chartData.water, color: colors.actionPrimary },
+            { x: 2, y: chartData.juice, color: colors.orangePrimary },
+            { x: 3, y: chartData.coffee, color: colors.brownPrimary },
+            { x: 4, y: 100 - drankInTotal, color: colors.lightPrimary },
           ]}
           innerRadius={isPortrait ? 120 : 55}
           cornerRadius={0}
           labels={() => null}
           style={{
-            data: {
-              fill: ({ datum }) => {
-                const color =
-                  chartData > 100
-                    ? colors.successPrimary
-                    : colors.actionPrimary;
-                return datum.x === 1 ? color : colors.lightPrimary;
-              },
-            },
+            data: { fill: (d) => d.datum.color },
           }}
         />
         <VictoryAxis
@@ -66,11 +82,11 @@ export const DailyProgressChart = ({ drankAmount, dailyGoal }: IProps) => {
           verticalAnchor="middle"
           x={isPortrait ? 200 : 112}
           y={isPortrait ? 200 : 112}
-          text={`${Math.round(chartData)}%`}
+          text={`${Math.round(drankInTotal)}%`}
           style={{
             fontSize: isPortrait ? 40 : 32,
             fill: `${
-              chartData > 100 ? colors.successPrimary : colors.actionPrimary
+              drankInTotal > 100 ? colors.successPrimary : colors.actionPrimary
             }`,
           }}
         />

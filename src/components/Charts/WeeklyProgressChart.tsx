@@ -124,8 +124,8 @@ export const WeeklyProgressChart = () => {
     return weeklyProgress.map((day, index) => {
       return {
         x: getPastWeekDays(currentDay)[index],
-        y: day,
-        label: day,
+        y: day.water + day.juice + day.coffee,
+        label: day.water + day.juice + day.coffee,
       };
     });
   };

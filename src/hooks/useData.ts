@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getUserGoal, getDailyProgress, updateDailyProgress, setGoal } from "../api/trackerData";
-import { format } from "date-fns";
+import { DrinkType } from "../components/Modals/AddProgressModal";
 
 export const useGetUserGoal = (userId: string) => {
     const { data: userGoal = 0, isLoading: isGoalLoading, error, refetch: refetchGoal } = useQuery({
@@ -20,7 +20,7 @@ export const useGetDailyProgress = (userId: string, date: string) => {
     const { data: dailyProgress, isLoading: isProgressLoading, error, refetch: refetchDailyProgress } = useQuery({
         queryKey: ['dailyProgress', userId, date], 
         queryFn: () => getDailyProgress(userId, date),
-        initialData: 0, 
+        initialData: { water: 0, juice: 0, coffee: 0 }, 
     });
 
     if (error) {
@@ -34,11 +34,12 @@ interface IUpdateDailyProgressProps {
     userId: string;
     date: string;
     progress: number;
+    drink_type: DrinkType;
   }
   
   export const useUpdateDailyProgress = () => {
     const { mutateAsync: updateProgress, error } = useMutation({
-     mutationFn: ({ userId, date, progress }: IUpdateDailyProgressProps) => updateDailyProgress(userId, date, progress)
+     mutationFn: ({ userId, date, progress, drink_type }: IUpdateDailyProgressProps) => updateDailyProgress(userId, date, progress, drink_type)
   });
   
     return { updateProgress, error};

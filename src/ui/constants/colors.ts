@@ -5,5 +5,7 @@ export const colors = {
     darkPrimary: '#102C57',
     errorPrimary: '#FF0000',
     actionPrimary: '#72A0C1',
-    successPrimary: '#22f059'
+    successPrimary: '#22f059',
+    orangePrimary: '#f5993d',
+    brownPrimary: '#9c3309',
 };

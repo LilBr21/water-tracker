@@ -1,14 +1,15 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
-import { useAuth } from "../../store/auth-context";
 import { useData } from "../../store/data-context";
 import { useSetGoal } from "../../hooks/useData";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
+import { RootAuthState } from "../../interfaces/store";
 
 interface IProps {
   isVisible: boolean;
@@ -17,9 +18,10 @@ interface IProps {
 
 export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
-  const { userData } = useAuth();
   const { refetchGoal } = useData();
   const { setUserGoal } = useSetGoal();
+
+  const userId = useSelector((state: RootAuthState) => state.auth.userId);
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
@@ -32,7 +34,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
 
   const handleSaveGoal = async () => {
     try {
-      await setUserGoal({ goal: chosenAmmount, userId: userData.userId });
+      await setUserGoal({ goal: chosenAmmount, userId });
 
       toast.show("Goal set!", {
         type: "success",

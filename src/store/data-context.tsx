@@ -1,8 +1,12 @@
 import { createContext, ReactNode, useContext } from "react";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
 import { useGetUserGoal, useGetDailyProgress } from "../hooks/useData";
-import { useAuth } from "./auth-context";
-import { DrinkType } from "../components/Modals/AddProgressModal";
+import { IUserData } from "../actions/auth";
+
+interface RootState {
+  auth: IUserData;
+}
 
 export const DataContext = createContext({
   userGoal: 0,
@@ -17,14 +21,13 @@ export const DataContext = createContext({
 });
 
 export const DataContextProvider = ({ children }: { children: ReactNode }) => {
-  const { userData } = useAuth();
-  const { userGoal, isGoalLoading, refetchGoal } = useGetUserGoal(
-    userData.userId
-  );
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
+  const { userGoal, isGoalLoading, refetchGoal } = useGetUserGoal(userId);
 
   const date = format(new Date(), "dd-MM-yyyy");
   const { dailyProgress, refetchDailyProgress } = useGetDailyProgress(
-    userData.userId,
+    userId,
     date
   );
 

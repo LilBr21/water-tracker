@@ -1,5 +1,6 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { format } from "date-fns";
@@ -9,10 +10,10 @@ import Juice from "../../assets/juice.svg";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
-import { useAuth } from "../../store/auth-context";
 import { useData } from "../../store/data-context";
 import { useUpdateDailyProgress } from "../../hooks/useData";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
+import { RootAuthState } from "../../interfaces/store";
 
 interface IProps {
   isVisible: boolean;
@@ -29,7 +30,8 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
   const [chosenDrink, setChosenDrink] = useState(DrinkType.WATER);
 
-  const { userData } = useAuth();
+  const userId = useSelector((state: RootAuthState) => state.auth.userId);
+
   const { refetchDailyProgress, dailyProgress } = useData();
   const { updateProgress: updateDailyProgress } = useUpdateDailyProgress();
 
@@ -66,7 +68,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
 
     try {
       await updateDailyProgress({
-        userId: userData.userId,
+        userId,
         date,
         progress: totalDailyProgress,
         drink_type: chosenDrink,

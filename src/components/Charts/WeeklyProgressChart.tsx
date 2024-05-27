@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { useSelector } from "react-redux";
 import { VictoryChart, VictoryBar } from "victory-native";
 import { getDay, format, subDays } from "date-fns";
 import {
@@ -8,11 +9,12 @@ import {
   Directions,
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
-import { useAuth } from "../../store/auth-context";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getDailyProgress } from "../../api/trackerData";
 import { useData } from "../../store/data-context";
 import { colors } from "../../ui/constants/colors";
+import { IUserData } from "../../actions/auth";
+import { RootAuthState } from "../../interfaces/store";
 
 export const WeeklyProgressChart = () => {
   const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);
@@ -21,7 +23,8 @@ export const WeeklyProgressChart = () => {
   const [toFormatted, setToFormatted] = useState("");
   const [fromFormatted, setFromFormatted] = useState("");
 
-  const { userData } = useAuth();
+  const userId = useSelector((state: RootAuthState) => state.auth.userId);
+
   const { dailyProgress } = useData();
 
   const handlePreviousWeek = () => {
@@ -75,7 +78,7 @@ export const WeeklyProgressChart = () => {
       const weeklyProgressData = [];
 
       for (const day of weekDays) {
-        const progress = await getDailyProgress(userData.userId, day);
+        const progress = await getDailyProgress(userId, day);
         weeklyProgressData.push(progress);
       }
 

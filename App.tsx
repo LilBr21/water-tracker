@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toast-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthContextProvider, useAuth } from "./src/store/auth-context";
+import { Provider } from "react-redux";
+import { store } from "./src/store/store";
 import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
@@ -38,16 +39,11 @@ function AuthStack() {
 }
 
 function Navigation() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    setAuthenticated(isAuthenticated);
-  }, [isAuthenticated]);
+  const token = useSelector((state: any) => state.auth.token);
 
   return (
     <NavigationContainer>
-      {authenticated ? <MyTabs /> : <AuthStack />}
+      {!!token ? <MyTabs /> : <AuthStack />}
     </NavigationContainer>
   );
 }
@@ -64,8 +60,8 @@ export default function App() {
 
   return (
     <ToastProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthContextProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
           <DataContextProvider>
             <SafeAreaView style={styles.container}>
               <GestureHandlerRootView>
@@ -74,8 +70,8 @@ export default function App() {
               </GestureHandlerRootView>
             </SafeAreaView>
           </DataContextProvider>
-        </AuthContextProvider>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </Provider>
     </ToastProvider>
   );
 }

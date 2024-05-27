@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { useSelector } from "react-redux";
 import { VictoryChart, VictoryBar } from "victory-native";
 import {
   Gesture,
@@ -7,11 +8,11 @@ import {
   Directions,
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
-import { format, subDays, getDaysInMonth } from "date-fns";
-import { useAuth } from "../../store/auth-context";
+import { format, getDaysInMonth } from "date-fns";
 import { getDailyProgress } from "../../api/trackerData";
 import { useData } from "../../store/data-context";
 import { colors } from "../../ui/constants/colors";
+import { RootAuthState } from "../../interfaces/store";
 
 export const MonthlyProgressChart = () => {
   const [monthlyProgress, setMonthlyProgress] = useState<null | any[]>(null);
@@ -23,7 +24,8 @@ export const MonthlyProgressChart = () => {
     parseInt(format(new Date(), "yyyy"))
   );
 
-  const { userData } = useAuth();
+  const userId = useSelector((state: RootAuthState) => state.auth.userId);
+
   const { dailyProgress } = useData();
 
   const handlePreviousMonth = () => {
@@ -82,7 +84,7 @@ export const MonthlyProgressChart = () => {
       const monthlyProgressData = [];
 
       for (const day of monthDays) {
-        const progress = await getDailyProgress(userData.userId, day);
+        const progress = await getDailyProgress(userId, day);
         monthlyProgressData.push(progress);
       }
 

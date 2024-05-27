@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home } from "../Home/Home";
 import { Statistics } from "../Statistics/Statistics";
 import { Settings } from "../Settings/Settings";
-import { useAuth } from "../../store/auth-context";
 
 const Tab = createBottomTabNavigator();
 

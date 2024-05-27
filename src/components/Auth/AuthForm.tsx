@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useToast } from "react-native-toast-notifications";
 import { useCreateUser, useSignIn } from "../../hooks/useAuth";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { validatePassword, validateEmail } from "../../utils/validation";
-import { useAuth } from "../../store/auth-context";
+import { authenticate } from "../../actions/auth";
 import { Input } from "../../ui/Input";
 import { Button, ButtonWidth, ButtonSizes } from "../../ui/Button";
 import { colors } from "../../ui/constants/colors";
@@ -29,12 +30,12 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
 
   const toast = useToast();
 
+  const dispatch = useDispatch();
+
   const { createNewUser } = useCreateUser();
   const { signInUser } = useSignIn();
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
-  const { authenticate } = useAuth();
 
   const handleAuthModeSwitch = () => {
     if (isOnLogin) {
@@ -49,7 +50,9 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
       const userData = await createNewUser({ email, password });
 
       if (userData?.token && userData?.userId) {
-        authenticate(userData);
+        dispatch(
+          authenticate({ token: userData.token, userId: userData.userId })
+        );
       } else {
         toast.show("Signup failed", {
           type: "danger",
@@ -71,7 +74,9 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
       const userData = await signInUser({ email, password });
 
       if (userData?.token && userData?.userId) {
-        authenticate(userData);
+        dispatch(
+          authenticate({ token: userData.token, userId: userData.userId })
+        );
       } else {
         toast.show("Signin failed", {
           type: "danger",

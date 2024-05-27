@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useData } from "../../store/data-context";
-import { useAuth } from "../../store/auth-context";
+import { logout } from "../../actions/auth";
 import { Button, ButtonSizes } from "../../ui/Button";
 import { colors } from "../../ui/constants/colors";
 import { GoalSetModal } from "../Modals/GoalSetModal";
@@ -9,7 +10,7 @@ import { GoalSetModal } from "../Modals/GoalSetModal";
 export const Settings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userGoal } = useData();
-  const { logout } = useAuth();
+  const dispatch = useDispatch();
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -29,7 +30,11 @@ export const Settings = () => {
         />
         <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
       </View>
-      <Button title="Log out" onPress={logout} size={ButtonSizes.S} />
+      <Button
+        title="Log out"
+        onPress={() => dispatch(logout())}
+        size={ButtonSizes.S}
+      />
     </View>
   );
 };

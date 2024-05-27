@@ -15,7 +15,7 @@
 
 An app to track daily water intake made using [Expo](https://expo.io/), [React Native](https://reactnative.dev/) and [Firebase Realtime Database](https://firebase.google.com/docs/database).
 
-<img src="src/assets/signin-screenshot.png" width="300" alt="Screenshot of signin project screen"/> <img src="src/assets/dailyprogress-screenshot.png" width="300" alt="Screenshot of project"/> <img src="src/assets/statistics-screenshot2.png" width="300" alt="Screenshot of project"/>
+<img src="src/assets/signin-screenshot.png" width="300" alt="Screenshot of signin project screen"/><img src="src/assets/add-daily-progress.png" width="300" alt="Screenshot of project"/> <img src="src/assets/daily-progress.png" width="300" alt="Screenshot of project"/> <img src="src/assets/statistics-screenshot2.png" width="300" alt="Screenshot of project"/>
 
 ## Getting Started
 

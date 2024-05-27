@@ -144,7 +144,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           <Input
             inputMode="numeric"
             keyboardType="numeric"
-            labelText={"Water ammount in mililiters (ml)"}
+            labelText={`${chosenDrink} ammount in mililiters (ml)`}
             onChangeText={(ammount) => handleSetProgress(ammount)}
           />
         </View>

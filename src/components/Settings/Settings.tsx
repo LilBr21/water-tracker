@@ -1,16 +1,17 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { useData } from "../../store/data-context";
 import { logout } from "../../actions/auth";
 import { Button, ButtonSizes } from "../../ui/Button";
 import { colors } from "../../ui/constants/colors";
 import { GoalSetModal } from "../Modals/GoalSetModal";
+import { RootDataState } from "../../interfaces/store";
 
 export const Settings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userGoal } = useData();
   const dispatch = useDispatch();
+
+  const userGoal = useSelector((state: RootDataState) => state.data.userGoal);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);

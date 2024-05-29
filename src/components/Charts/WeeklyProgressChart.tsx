@@ -11,10 +11,8 @@ import {
 import { runOnJS } from "react-native-reanimated";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
 import { getDailyProgress } from "../../api/trackerData";
-import { useData } from "../../store/data-context";
 import { colors } from "../../ui/constants/colors";
-import { IUserData } from "../../actions/auth";
-import { RootAuthState } from "../../interfaces/store";
+import { RootAuthState, RootDataState } from "../../interfaces/store";
 
 export const WeeklyProgressChart = () => {
   const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);
@@ -25,7 +23,9 @@ export const WeeklyProgressChart = () => {
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
 
-  const { dailyProgress } = useData();
+  const dailyProgress = useSelector(
+    (state: RootDataState) => state.data.dailyProgress
+  );
 
   const handlePreviousWeek = () => {
     setPastWeeks((prevState) => prevState + 1);

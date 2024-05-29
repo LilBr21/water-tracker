@@ -1,4 +1,5 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useDispatch } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -6,10 +7,10 @@ import { useToast } from "react-native-toast-notifications";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
-import { useData } from "../../store/data-context";
-import { useSetGoal } from "../../hooks/useData";
+import { setGoalThunk } from "../../actions/data";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { RootAuthState } from "../../interfaces/store";
+import { AppDispatch } from "../../store/store";
 
 interface IProps {
   isVisible: boolean;
@@ -18,8 +19,6 @@ interface IProps {
 
 export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
-  const { refetchGoal } = useData();
-  const { setUserGoal } = useSetGoal();
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
 
@@ -28,20 +27,21 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
 
   const toast = useToast();
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleSetGoal = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
 
   const handleSaveGoal = async () => {
     try {
-      await setUserGoal({ goal: chosenAmmount, userId });
+      await dispatch(setGoalThunk({ goal: chosenAmmount, userId })).unwrap();
 
       toast.show("Goal set!", {
         type: "success",
         placement: "top",
         duration: 4000,
       });
-      refetchGoal();
     } catch (error) {
       toast.show("Failed to set goal", {
         type: "danger",

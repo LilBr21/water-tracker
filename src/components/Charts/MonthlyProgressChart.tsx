@@ -10,9 +10,8 @@ import {
 import { runOnJS } from "react-native-reanimated";
 import { format, getDaysInMonth } from "date-fns";
 import { getDailyProgress } from "../../api/trackerData";
-import { useData } from "../../store/data-context";
 import { colors } from "../../ui/constants/colors";
-import { RootAuthState } from "../../interfaces/store";
+import { RootAuthState, RootDataState } from "../../interfaces/store";
 
 export const MonthlyProgressChart = () => {
   const [monthlyProgress, setMonthlyProgress] = useState<null | any[]>(null);
@@ -26,7 +25,9 @@ export const MonthlyProgressChart = () => {
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
 
-  const { dailyProgress } = useData();
+  const dailyProgress = useSelector(
+    (state: RootDataState) => state.data.dailyProgress
+  );
 
   const handlePreviousMonth = () => {
     if (chosenMonth - 1 === 0) {

@@ -1,6 +1,6 @@
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { format } from "date-fns";
@@ -10,10 +10,11 @@ import Juice from "../../assets/juice.svg";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
-import { useData } from "../../store/data-context";
+import { updateDailyProgressThunk } from "../../actions/data";
 import { useUpdateDailyProgress } from "../../hooks/useData";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
-import { RootAuthState } from "../../interfaces/store";
+import { RootAuthState, RootDataState } from "../../interfaces/store";
+import { AppDispatch } from "../../store/store";
 
 interface IProps {
   isVisible: boolean;
@@ -31,12 +32,14 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenDrink, setChosenDrink] = useState(DrinkType.WATER);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
-
-  const { refetchDailyProgress, dailyProgress } = useData();
-  const { updateProgress: updateDailyProgress } = useUpdateDailyProgress();
+  const dailyProgress = useSelector(
+    (state: RootDataState) => state.data.dailyProgress
+  );
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const toast = useToast();
 
@@ -67,14 +70,14 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
     const totalDailyProgress = drankToday + chosenAmmount;
 
     try {
-      await updateDailyProgress({
-        userId,
-        date,
-        progress: totalDailyProgress,
-        drink_type: chosenDrink,
-      });
-
-      refetchDailyProgress();
+      await dispatch(
+        updateDailyProgressThunk({
+          userId,
+          date,
+          progress: totalDailyProgress,
+          drink_type: chosenDrink,
+        })
+      ).unwrap();
     } catch (error) {
       toast.show("Failed to update progress", {
         type: "danger",

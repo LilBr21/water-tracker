@@ -3,9 +3,10 @@ import { DrinkType } from '../components/Modals/AddProgressModal';
 
 export const setGoal = async (goal: number, userId: string) => {
     try {
-        axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json`, {
+        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json`, {
             goal
         })
+        return response
     } catch (error) {
         throw new Error(`Failed to set user goal, ${error}`);
     }
@@ -15,11 +16,10 @@ export const getUserGoal = async (userId: string) => {
     try {
         const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?print=pretty`);
         const data = response.data;
-
         if (!data) {
             return 0;
         }
-        return response.data.goal ?? 0;
+        return data.goal ?? 0;
     } catch (error) {
         throw new Error(`Failed to fetch user goal, ${error}`);
     }
@@ -27,9 +27,10 @@ export const getUserGoal = async (userId: string) => {
 
 export const updateDailyProgress = async (userId: string, date: string, progress: number, drink_type: DrinkType) => {
     try {
-        axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}/${drink_type}.json`, {
+        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}/${drink_type}.json`, {
             progress,
         })
+        return response;
     } catch (error) {
         throw new Error(`Failed to update daily progress, ${error}`);
     }

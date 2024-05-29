@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { Button } from "../../ui/Button";
 import { DailyProgressChart } from "../Charts/DailyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { AddProgressModal } from "../Modals/AddProgressModal";
-import { useData } from "../../store/data-context";
 import { colors } from "../../ui/constants/colors";
+import { RootDataState } from "../../interfaces/store";
 
 export const Progress = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +15,10 @@ export const Progress = () => {
   const [drankCoffee, setDrankCoffee] = useState(0);
   const [drankAmount, setDrankAmount] = useState(0);
 
-  const { userGoal, dailyProgress } = useData();
+  const userGoal = useSelector((state: RootDataState) => state.data.userGoal);
+  const dailyProgress = useSelector(
+    (state: RootDataState) => state.data.dailyProgress
+  );
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;

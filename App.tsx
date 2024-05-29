@@ -8,7 +8,6 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { store } from "./src/store/store";
-import { DataContextProvider } from "./src/store/data-context";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
 import { MyTabs } from "./src/components/BottomBar/BottomBar";
@@ -62,14 +61,12 @@ export default function App() {
     <ToastProvider>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <DataContextProvider>
-            <SafeAreaView style={styles.container}>
-              <GestureHandlerRootView>
-                <StatusBar style="auto" />
-                <Navigation />
-              </GestureHandlerRootView>
-            </SafeAreaView>
-          </DataContextProvider>
+          <SafeAreaView style={styles.container}>
+            <GestureHandlerRootView>
+              <StatusBar style="auto" />
+              <Navigation />
+            </GestureHandlerRootView>
+          </SafeAreaView>
         </QueryClientProvider>
       </Provider>
     </ToastProvider>

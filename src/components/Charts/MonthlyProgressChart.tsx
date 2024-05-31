@@ -8,7 +8,7 @@ import {
   Directions,
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
-import { format, getDaysInMonth, getYear, getMonth } from "date-fns";
+import { format, getDaysInMonth } from "date-fns";
 import { colors } from "../../ui/constants/colors";
 import { getMonthlyProgressThunk } from "../../actions/data";
 import { AppDispatch } from "../../store/store";

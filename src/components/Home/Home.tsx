@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
-import { format } from "date-fns";
+import { format, getMonth, getYear } from "date-fns";
 import { MainTitle } from "../MainTitle/MainTitle";
 import { Progress } from "./Progress";
 import { NoGoal } from "./NoGoal";
@@ -20,10 +20,12 @@ export const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const date = format(new Date(), "dd-MM-yyyy");
+  const year = getYear(new Date()).toString();
+  const month = getMonth(new Date()).toString();
 
   useEffect(() => {
     dispatch(getUserGoalThunk(userId)).unwrap();
-    dispatch(getDailyProgressThunk({ userId, date })).unwrap();
+    dispatch(getDailyProgressThunk({ userId, year, month, date })).unwrap();
   }, [userId]);
 
   if (isGoalLoading === "pending") {

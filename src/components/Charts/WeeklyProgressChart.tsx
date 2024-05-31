@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 import { VictoryChart, VictoryBar } from "victory-native";
-import { getDay, format, subDays } from "date-fns";
+import { getDay, format, subDays, getMonth, getYear } from "date-fns";
 import {
   Gesture,
   GestureDetector,
@@ -20,6 +20,9 @@ export const WeeklyProgressChart = () => {
   const [pastWeeks, setPastWeeks] = useState(0);
   const [toFormatted, setToFormatted] = useState("");
   const [fromFormatted, setFromFormatted] = useState("");
+
+  const year = getYear(new Date()).toString();
+  const month = getMonth(new Date()).toString();
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
 
@@ -78,7 +81,7 @@ export const WeeklyProgressChart = () => {
       const weeklyProgressData = [];
 
       for (const day of weekDays) {
-        const progress = await getDailyProgress(userId, day);
+        const progress = await getDailyProgress(userId, year, month, day);
         weeklyProgressData.push(progress);
       }
 

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { getUserGoal, getDailyProgress, updateDailyProgress, setGoal } from '../api/trackerData';
+import { getUserGoal, getDailyProgress, getMonthlyProgress, updateDailyProgress, setGoal } from '../api/trackerData';
 import { DrinkType } from '../components/Modals/AddProgressModal';
 
 interface IDailyProgress {
@@ -8,10 +8,23 @@ interface IDailyProgress {
     juice: number;
     coffee: number;
 }
+
+interface Progress {
+  progress: number;
+}
+
+interface MonthlyProgress {
+  [date: string]: {
+      [beverage: string]: Progress;
+  };
+}
+
 export interface DataState {
     userGoal: number;
+    monthlyProgress: MonthlyProgress | null;
     dailyProgress: IDailyProgress;
     isGoalLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
+    isMonthlyProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     isDailyProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     isUpdateProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     error: string | null;
@@ -24,6 +37,7 @@ const initialState: DataState = {
         juice: 0,
         coffee: 0,
     },
+    monthlyProgress: null,
     isGoalLoading: 'idle',
     isDailyProgressLoading: 'idle',
     isUpdateProgressLoading: 'idle',
@@ -57,26 +71,38 @@ export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: str
     }
   );
   
-  export const getDailyProgressThunk = createAsyncThunk<IDailyProgress, { userId: string; date: string }>(
+  export const getDailyProgressThunk = createAsyncThunk<IDailyProgress, { userId: string; year: string; month: string; date: string }>(
     'data/getDailyProgress',
-    async ({ userId, date }, { rejectWithValue }) => {
+    async ({ userId, year, month, date }, { rejectWithValue }) => {
       try {
-        const response = await getDailyProgress(userId, date);
+        const response = await getDailyProgress(userId, year, month, date);
         return response;
       } catch (err: any) {
         return rejectWithValue(err.response.data);
       }
     }
   );
+
+  export const getMonthlyProgressThunk = createAsyncThunk<MonthlyProgress, { userId: string; year: string; month: string }>(
+    'data/getMonthlyProgress',
+    async ({ userId, year, month }, { rejectWithValue }) => {
+      try {
+        const response = await getMonthlyProgress(userId, year, month);
+        return response;
+      } catch (err: any) {
+        return rejectWithValue(err.response.data);
+      }
+    }
+  )
   
   export const updateDailyProgressThunk = createAsyncThunk<
   { drink_type: DrinkType; progress: number },
-  { userId: string; date: string; progress: number; drink_type: DrinkType }
+  { userId: string; year: string, month: string, date: string; progress: number; drink_type: DrinkType }
 >(
   'data/updateDailyProgress',
-  async ({ userId, date, progress, drink_type }, { rejectWithValue }) => {
+  async ({ userId, year, month, date, progress, drink_type }, { rejectWithValue }) => {
     try {
-      const response = await updateDailyProgress(userId, date, progress, drink_type);
+      const response = await updateDailyProgress(userId, year, month, date, progress, drink_type);
       return { drink_type, progress };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -110,6 +136,17 @@ const dataSlice = createSlice({
             })
             .addCase(getUserGoalThunk.rejected, (state, action) => {
                 state.isGoalLoading = 'failed';
+                state.error = action.error.message ?? null;
+            })
+            .addCase(getMonthlyProgressThunk.pending, (state) => {
+                state.isMonthlyProgressLoading = 'pending';
+            })
+            .addCase(getMonthlyProgressThunk.fulfilled, (state, action: PayloadAction<any>) => {
+                state.monthlyProgress = action.payload;
+                state.isMonthlyProgressLoading = 'succeeded';
+            })
+            .addCase(getMonthlyProgressThunk.rejected, (state, action) => {
+                state.isMonthlyProgressLoading = 'failed';
                 state.error = action.error.message ?? null;
             })
             .addCase(getDailyProgressThunk.pending, (state) => {

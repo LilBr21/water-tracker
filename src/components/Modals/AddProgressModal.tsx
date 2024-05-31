@@ -3,7 +3,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
-import { format } from "date-fns";
+import { format, getMonth, getYear } from "date-fns";
 import CoffeeCup from "../../assets/coffee-cup.svg";
 import WaterGlass from "../../assets/water-glass.svg";
 import Juice from "../../assets/juice.svg";
@@ -11,7 +11,6 @@ import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
 import { updateDailyProgressThunk } from "../../actions/data";
-import { useUpdateDailyProgress } from "../../hooks/useData";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { RootAuthState, RootDataState } from "../../interfaces/store";
 import { AppDispatch } from "../../store/store";
@@ -65,6 +64,8 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   };
 
   const handleSaveProgress = async () => {
+    const year = getYear(new Date()).toString();
+    const month = getMonth(new Date()).toString();
     const date = format(new Date(), "dd-MM-yyyy");
     const drankToday = getDrankToday();
     const totalDailyProgress = drankToday + chosenAmmount;
@@ -73,6 +74,8 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
       await dispatch(
         updateDailyProgressThunk({
           userId,
+          year,
+          month,
           date,
           progress: totalDailyProgress,
           drink_type: chosenDrink,

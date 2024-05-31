@@ -25,9 +25,9 @@ export const getUserGoal = async (userId: string) => {
     }
 }
 
-export const updateDailyProgress = async (userId: string, date: string, progress: number, drink_type: DrinkType) => {
+export const updateDailyProgress = async (userId: string, year: string, month: string, date: string, progress: number, drink_type: DrinkType) => {
     try {
-        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}/${drink_type}.json`, {
+        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}/${date}/${drink_type}.json`, {
             progress,
         })
         return response;
@@ -36,9 +36,9 @@ export const updateDailyProgress = async (userId: string, date: string, progress
     }
 }
 
-export const getDailyProgress = async (userId: string, date: string) => {
+export const getDailyProgress = async (userId: string, year: string, month: string, date: string) => {
     try {
-        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${date}.json?print=pretty`);
+        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}/${date}.json?print=pretty`);
         const data = response.data;
 
         // Check if data is null or undefined and return default values
@@ -53,6 +53,22 @@ export const getDailyProgress = async (userId: string, date: string) => {
         };
     } catch (error) {
         throw new Error(`Failed to fetch daily progress, ${error}`);
+    }
+}
+
+export const getMonthlyProgress = async (userId: string, year: string, month: string) => {
+    try {
+        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}.json?print=pretty`);
+        const data = response.data;
+
+        // Check if data is null or undefined and return default values
+        if (!data) {
+            return null;
+        }
+
+        return data;
+    } catch (error) {
+        throw new Error(`Failed to fetch monthly progress, ${error}`);
     }
 }
 

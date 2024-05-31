@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { VictoryChart, VictoryBar } from "victory-native";
 import {
   Gesture,
@@ -8,25 +8,36 @@ import {
   Directions,
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
-import { format, getDaysInMonth } from "date-fns";
-import { getDailyProgress } from "../../api/trackerData";
+import { format, getDaysInMonth, getYear, getMonth } from "date-fns";
 import { colors } from "../../ui/constants/colors";
+import { getMonthlyProgressThunk } from "../../actions/data";
+import { AppDispatch } from "../../store/store";
 import { RootAuthState, RootDataState } from "../../interfaces/store";
 
 export const MonthlyProgressChart = () => {
   const [monthlyProgress, setMonthlyProgress] = useState<null | any[]>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [chosenMonth, setChosenMonth] = useState(
     parseInt(format(new Date(), "M"))
   );
   const [chosenYear, setChosenYear] = useState(
     parseInt(format(new Date(), "yyyy"))
   );
+  const [showNoData, setShowNoData] = useState(false);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
 
   const dailyProgress = useSelector(
     (state: RootDataState) => state.data.dailyProgress
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const monthlyProgressData = useSelector(
+    (state: RootDataState) => state.data.monthlyProgress
+  );
+
+  const isMonthlyProgressLoading = useSelector(
+    (state: RootDataState) => state.data.isMonthlyProgressLoading
   );
 
   const handlePreviousMonth = () => {
@@ -67,57 +78,69 @@ export const MonthlyProgressChart = () => {
     flingLeftGesture
   );
 
-  const getMonthlyProgress = async () => {
-    try {
-      setIsLoading(true);
-      const monthDays = [];
+  const getMonthlyProgress = (data: any, daysInMonth: number) => {
+    const result = Array(daysInMonth).fill(0);
 
-      for (
-        let i = 0;
-        i < getDaysInMonth(new Date(chosenYear, chosenMonth - 1));
-        i++
-      ) {
-        const date = new Date(chosenYear, chosenMonth - 1);
-        date.setDate(i + 1);
-        monthDays.push(format(date, "dd-MM-yyyy"));
-      }
+    const dataArray: any = [];
+    Object.keys(data).forEach((date) => {
+      Object.keys(data[date]).forEach((beverage) => {
+        dataArray.push({
+          date: date,
+          beverage: beverage,
+          progress: data[date][beverage].progress,
+        });
+      });
+    });
 
-      const monthlyProgressData = [];
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayStr = day.toString().padStart(2, "0");
+      const monthStr = chosenMonth.toString().padStart(2, "0");
+      const dateKey = `${dayStr}-${monthStr}-2024`;
 
-      for (const day of monthDays) {
-        const progress = await getDailyProgress(userId, day);
-        monthlyProgressData.push(progress);
-      }
+      const dayEntries = dataArray.filter(
+        (entry: { date: string }) => entry.date === dateKey
+      );
 
-      return monthlyProgressData;
-    } catch (error) {
-      throw new Error(`Failed to fetch weekly progress, ${error}`);
-    } finally {
-      setIsLoading(false);
+      const totalProgress = dayEntries.reduce(
+        (sum: any, entry: { progress: any }) => sum + entry.progress,
+        0
+      );
+
+      result[day - 1] = totalProgress;
     }
-  };
 
-  const handleSetMonthlyProgress = async () => {
-    const monthlyProgressData = await getMonthlyProgress();
-    if (monthlyProgressData && monthlyProgressData.length > 0) {
-      setMonthlyProgress(monthlyProgressData);
-    }
+    return result;
   };
 
   useEffect(() => {
-    handleSetMonthlyProgress();
+    const year = chosenYear.toString();
+    const month = (chosenMonth - 1).toString();
+    dispatch(getMonthlyProgressThunk({ userId, year, month }));
   }, [dailyProgress, chosenMonth, chosenYear]);
+
+  useEffect(() => {
+    if (monthlyProgressData) {
+      setShowNoData(false);
+      const daysInMonth = getDaysInMonth(new Date(chosenYear, chosenMonth - 1));
+      const newMonthlyProgressData = getMonthlyProgress(
+        monthlyProgressData,
+        daysInMonth
+      );
+      setMonthlyProgress(newMonthlyProgressData);
+    } else {
+      setShowNoData(true);
+    }
+  }, [monthlyProgressData]);
 
   const generateData = () => {
     if (!monthlyProgress) {
       return [];
     }
     return monthlyProgress.map((day, index) => {
-      const progress = day.water + day.juice + day.coffee;
       return {
         x: index + 1,
-        y: progress === 0 ? "" : progress,
-        label: progress === 0 ? "" : progress,
+        y: day === 0 ? "" : day,
+        label: day === 0 ? "" : day,
       };
     });
   };
@@ -141,7 +164,7 @@ export const MonthlyProgressChart = () => {
     },
   };
 
-  if (isLoading) {
+  if (isMonthlyProgressLoading === "pending") {
     return <ActivityIndicator size="large" color={colors.lightPrimary} />;
   }
 
@@ -153,15 +176,19 @@ export const MonthlyProgressChart = () => {
           {chosenMonth} {chosenYear}
         </Text>
         <View>
-          <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
-            <VictoryBar
-              data={generateData()}
-              style={{
-                data: { fill: colors.actionPrimary },
-                labels: { fill: colors.lightPrimary },
-              }}
-            />
-          </VictoryChart>
+          {showNoData ? (
+            <Text style={styles.text}>No data for this month</Text>
+          ) : (
+            <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
+              <VictoryBar
+                data={generateData()}
+                style={{
+                  data: { fill: colors.actionPrimary },
+                  labels: { fill: colors.lightPrimary },
+                }}
+              />
+            </VictoryChart>
+          )}
         </View>
       </View>
     </GestureDetector>

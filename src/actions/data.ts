@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { getUserGoal, getDailyProgress, getMonthlyProgress, updateDailyProgress, setGoal } from '../api/trackerData';
-import { DrinkType } from '../components/Modals/AddProgressModal';
+import { DrinkType } from '../interfaces/drinks';
 
 interface IDailyProgress {
     water: number;

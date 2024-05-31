@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DrinkType } from '../components/Modals/AddProgressModal';
+import { DrinkType } from "../interfaces/drinks";
 
 export const setGoal = async (goal: number, userId: string) => {
     try {

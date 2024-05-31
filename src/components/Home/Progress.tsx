@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "../../ui/Button";
 import { DailyProgressChart } from "../Charts/DailyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
-import { AddProgressModal } from "../Modals/AddProgressModal";
+import { AddProgressModal } from "../Modals/AddProgressModal/AddProgressModal";
 import { colors } from "../../ui/constants/colors";
 import { RootDataState } from "../../interfaces/store";
 

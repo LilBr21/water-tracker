@@ -3,27 +3,23 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
+
 import { format, getMonth, getYear } from "date-fns";
-import CoffeeCup from "../../assets/coffee-cup.svg";
-import WaterGlass from "../../assets/water-glass.svg";
-import Juice from "../../assets/juice.svg";
-import { Input } from "../../ui/Input";
-import { colors } from "../../ui/constants/colors";
-import { Button } from "../../ui/Button";
-import { updateDailyProgressThunk } from "../../actions/data";
-import { useOrientation, Orientation } from "../../hooks/useOrientation";
-import { RootAuthState, RootDataState } from "../../interfaces/store";
-import { AppDispatch } from "../../store/store";
+import { Input } from "../../../ui/Input";
+import { colors } from "../../../ui/constants/colors";
+import { Button } from "../../../ui/Button";
+import { updateDailyProgressThunk } from "../../../actions/data";
+import { useOrientation, Orientation } from "../../../hooks/useOrientation";
+import { RootAuthState, RootDataState } from "../../../interfaces/store";
+import { AppDispatch } from "../../../store/store";
+import { DrinkType } from "../../../interfaces/drinks";
+import { WaterButton } from "./DrinkButtons/WaterButton";
+import { JuiceButton } from "./DrinkButtons/JuiceButton";
+import { CoffeeButton } from "./DrinkButtons/CoffeeButton";
 
 interface IProps {
   isVisible: boolean;
   onClose: () => void;
-}
-
-export enum DrinkType {
-  WATER = "water",
-  JUICE = "juice",
-  COFFEE = "coffee",
 }
 
 export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
@@ -111,39 +107,18 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
         </TouchableOpacity>
         <Text style={styles(isPortrait).text}>Add daily progress.</Text>
         <View style={styles(isPortrait).drinkButtonsContainer}>
-          <View>
-            <TouchableOpacity
-              style={
-                styles(isPortrait, chosenDrink === DrinkType.WATER).drinkButton
-              }
-              onPress={() => handleChooseDrink(DrinkType.WATER)}
-            >
-              <WaterGlass width={52} height={52} />
-            </TouchableOpacity>
-            <Text style={styles(isPortrait).drinkButtonText}>Water</Text>
-          </View>
-          <View>
-            <TouchableOpacity
-              style={
-                styles(isPortrait, chosenDrink === DrinkType.JUICE).drinkButton
-              }
-              onPress={() => handleChooseDrink(DrinkType.JUICE)}
-            >
-              <Juice width={52} height={52} />
-            </TouchableOpacity>
-            <Text style={styles(isPortrait).drinkButtonText}>Juice</Text>
-          </View>
-          <View>
-            <TouchableOpacity
-              style={
-                styles(isPortrait, chosenDrink === DrinkType.COFFEE).drinkButton
-              }
-              onPress={() => handleChooseDrink(DrinkType.COFFEE)}
-            >
-              <CoffeeCup width={52} height={52} />
-            </TouchableOpacity>
-            <Text style={styles(isPortrait).drinkButtonText}>Coffee</Text>
-          </View>
+          <WaterButton
+            chosenDrink={chosenDrink}
+            handleChooseDrink={handleChooseDrink}
+          />
+          <JuiceButton
+            chosenDrink={chosenDrink}
+            handleChooseDrink={handleChooseDrink}
+          />
+          <CoffeeButton
+            chosenDrink={chosenDrink}
+            handleChooseDrink={handleChooseDrink}
+          />
         </View>
         <Text style={styles(isPortrait).text}>
           How much {chosenDrink} did you drink?

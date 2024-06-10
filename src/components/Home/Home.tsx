@@ -12,6 +12,7 @@ import { RootDataState } from "../../interfaces/store";
 
 export const Home = () => {
   const userGoal = useSelector((state: any) => state.data.userGoal);
+  const token = useSelector((state: any) => state.auth.token);
   const userId = useSelector((state: any) => state.auth.userId);
   const isGoalLoading = useSelector(
     (state: RootDataState) => state.data.isGoalLoading
@@ -24,9 +25,11 @@ export const Home = () => {
   const month = getMonth(new Date()).toString();
 
   useEffect(() => {
-    dispatch(getUserGoalThunk(userId)).unwrap();
-    dispatch(getDailyProgressThunk({ userId, year, month, date })).unwrap();
-  }, [userId]);
+    dispatch(getUserGoalThunk({ userId, token })).unwrap();
+    dispatch(
+      getDailyProgressThunk({ userId, year, month, date, token })
+    ).unwrap();
+  }, [userId, token]);
 
   if (isGoalLoading === "pending") {
     return (

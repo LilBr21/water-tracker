@@ -27,6 +27,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenDrink, setChosenDrink] = useState(DrinkType.WATER);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
+  const token = useSelector((state: RootAuthState) => state.auth.token);
   const dailyProgress = useSelector(
     (state: RootDataState) => state.data.dailyProgress
   );
@@ -75,6 +76,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           date,
           progress: totalDailyProgress,
           drink_type: chosenDrink,
+          token,
         })
       ).unwrap();
     } catch (error) {

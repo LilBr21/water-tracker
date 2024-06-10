@@ -44,11 +44,11 @@ const initialState: DataState = {
     error: null,
 } as DataState;
 
-export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: string }>(
+export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: string, token: string }>(
     'data/setGoal',
-    async ({ goal, userId }, { rejectWithValue }) => {
+    async ({ goal, userId, token }, { rejectWithValue }) => {
       try {
-        const response = await setGoal(goal, userId);
+        const response = await setGoal(goal, userId, token);
         return response.data;
       } catch (err: any) {
         return rejectWithValue(err.response.data);
@@ -56,11 +56,11 @@ export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: str
     }
   );
   
-  export const getUserGoalThunk = createAsyncThunk<number, string>(
+  export const getUserGoalThunk = createAsyncThunk<number, { userId: string, token: string }>(
     'data/getUserGoal',
-    async (userId, { rejectWithValue }) => {
+    async ({ userId, token }, { rejectWithValue }) => {
       try {
-        const response = await getUserGoal(userId);
+        const response = await getUserGoal(userId, token);
         if (response === undefined) {
             return 0;
         }
@@ -71,11 +71,11 @@ export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: str
     }
   );
   
-  export const getDailyProgressThunk = createAsyncThunk<IDailyProgress, { userId: string; year: string; month: string; date: string }>(
+  export const getDailyProgressThunk = createAsyncThunk<IDailyProgress, { userId: string; year: string; month: string; date: string, token: string }>(
     'data/getDailyProgress',
-    async ({ userId, year, month, date }, { rejectWithValue }) => {
+    async ({ userId, year, month, date, token }, { rejectWithValue }) => {
       try {
-        const response = await getDailyProgress(userId, year, month, date);
+        const response = await getDailyProgress(userId, year, month, date, token);
         return response;
       } catch (err: any) {
         return rejectWithValue(err.response.data);
@@ -83,11 +83,11 @@ export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: str
     }
   );
 
-  export const getMonthlyProgressThunk = createAsyncThunk<MonthlyProgress, { userId: string; year: string; month: string }>(
+  export const getMonthlyProgressThunk = createAsyncThunk<MonthlyProgress, { userId: string; year: string; month: string, token: string }>(
     'data/getMonthlyProgress',
-    async ({ userId, year, month }, { rejectWithValue }) => {
+    async ({ userId, year, month, token }, { rejectWithValue }) => {
       try {
-        const response = await getMonthlyProgress(userId, year, month);
+        const response = await getMonthlyProgress(userId, year, month, token);
         return response;
       } catch (err: any) {
         return rejectWithValue(err.response.data);
@@ -97,12 +97,12 @@ export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: str
   
   export const updateDailyProgressThunk = createAsyncThunk<
   { drink_type: DrinkType; progress: number },
-  { userId: string; year: string, month: string, date: string; progress: number; drink_type: DrinkType }
+  { userId: string; year: string, month: string, date: string; progress: number; drink_type: DrinkType, token: string }
 >(
   'data/updateDailyProgress',
-  async ({ userId, year, month, date, progress, drink_type }, { rejectWithValue }) => {
+  async ({ userId, year, month, date, progress, drink_type, token }, { rejectWithValue }) => {
     try {
-      const response = await updateDailyProgress(userId, year, month, date, progress, drink_type);
+      const response = await updateDailyProgress(userId, year, month, date, progress, drink_type, token);
       return { drink_type, progress };
     } catch (err: any) {
       return rejectWithValue(err.response.data);

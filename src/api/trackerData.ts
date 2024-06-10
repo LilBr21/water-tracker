@@ -1,9 +1,9 @@
 import axios from "axios";
 import { DrinkType } from "../interfaces/drinks";
 
-export const setGoal = async (goal: number, userId: string) => {
+export const setGoal = async (goal: number, userId: string, token: string) => {
     try {
-        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json`, {
+        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?auth=${token}`, {
             goal
         })
         return response
@@ -12,9 +12,9 @@ export const setGoal = async (goal: number, userId: string) => {
     }
 };
 
-export const getUserGoal = async (userId: string) => {
+export const getUserGoal = async (userId: string, token: string) => {
     try {
-        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?print=pretty`);
+        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?print=pretty&auth=${token}`);
         const data = response.data;
         if (!data) {
             return 0;
@@ -25,9 +25,9 @@ export const getUserGoal = async (userId: string) => {
     }
 }
 
-export const updateDailyProgress = async (userId: string, year: string, month: string, date: string, progress: number, drink_type: DrinkType) => {
+export const updateDailyProgress = async (userId: string, year: string, month: string, date: string, progress: number, drink_type: DrinkType, token: string) => {
     try {
-        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}/${date}/${drink_type}.json`, {
+        const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}/${date}/${drink_type}.json?auth=${token}`, {
             progress,
         })
         return response;
@@ -36,9 +36,9 @@ export const updateDailyProgress = async (userId: string, year: string, month: s
     }
 }
 
-export const getDailyProgress = async (userId: string, year: string, month: string, date: string) => {
+export const getDailyProgress = async (userId: string, year: string, month: string, date: string, token: string) => {
     try {
-        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}/${date}.json?print=pretty`);
+        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}/${date}.json?print=pretty&auth=${token}`);
         const data = response.data;
 
         // Check if data is null or undefined and return default values
@@ -56,12 +56,11 @@ export const getDailyProgress = async (userId: string, year: string, month: stri
     }
 }
 
-export const getMonthlyProgress = async (userId: string, year: string, month: string) => {
+export const getMonthlyProgress = async (userId: string, year: string, month: string, token: string) => {
     try {
-        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}.json?print=pretty`);
+        const response = await axios.get(`https://water-tracker-2c238-default-rtdb.firebaseio.com/progress/${userId}/${year}/${month}.json?print=pretty&auth=${token}`);
         const data = response.data;
 
-        // Check if data is null or undefined and return default values
         if (!data) {
             return null;
         }

@@ -6,7 +6,7 @@ import { DailyProgressChart } from "../Charts/DailyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { AddProgressModal } from "../Modals/AddProgressModal/AddProgressModal";
 import { colors } from "../../ui/constants/colors";
-import { RootDataState } from "../../interfaces/store";
+import { RootDataState, RootAuthState } from "../../interfaces/store";
 
 export const Progress = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -25,6 +25,7 @@ export const WeeklyProgressChart = () => {
   const month = getMonth(new Date()).toString();
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
+  const token = useSelector((state: RootAuthState) => state.auth.token);
 
   const dailyProgress = useSelector(
     (state: RootDataState) => state.data.dailyProgress
@@ -81,7 +82,13 @@ export const WeeklyProgressChart = () => {
       const weeklyProgressData = [];
 
       for (const day of weekDays) {
-        const progress = await getDailyProgress(userId, year, month, day);
+        const progress = await getDailyProgress(
+          userId,
+          year,
+          month,
+          day,
+          token
+        );
         weeklyProgressData.push(progress);
       }
 

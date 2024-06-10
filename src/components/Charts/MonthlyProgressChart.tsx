@@ -25,6 +25,7 @@ export const MonthlyProgressChart = () => {
   const [showNoData, setShowNoData] = useState(false);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
+  const token = useSelector((state: RootAuthState) => state.auth.token);
 
   const dailyProgress = useSelector(
     (state: RootDataState) => state.data.dailyProgress
@@ -115,7 +116,7 @@ export const MonthlyProgressChart = () => {
   useEffect(() => {
     const year = chosenYear.toString();
     const month = (chosenMonth - 1).toString();
-    dispatch(getMonthlyProgressThunk({ userId, year, month }));
+    dispatch(getMonthlyProgressThunk({ userId, year, month, token }));
   }, [dailyProgress, chosenMonth, chosenYear]);
 
   useEffect(() => {

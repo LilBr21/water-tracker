@@ -21,6 +21,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
+  const token = useSelector((state: RootAuthState) => state.auth.token);
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
@@ -35,7 +36,9 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
 
   const handleSaveGoal = async () => {
     try {
-      await dispatch(setGoalThunk({ goal: chosenAmmount, userId })).unwrap();
+      await dispatch(
+        setGoalThunk({ goal: chosenAmmount, userId, token })
+      ).unwrap();
 
       toast.show("Goal set!", {
         type: "success",

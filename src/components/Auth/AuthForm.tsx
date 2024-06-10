@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useToast } from "react-native-toast-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCreateUser, useSignIn } from "../../hooks/useAuth";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { validatePassword, validateEmail } from "../../utils/validation";
@@ -53,6 +54,8 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
         dispatch(
           authenticate({ token: userData.token, userId: userData.userId })
         );
+        AsyncStorage.setItem("token", userData.token);
+        AsyncStorage.setItem("userId", userData.userId);
       } else {
         toast.show("Signup failed", {
           type: "danger",
@@ -77,6 +80,8 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
         dispatch(
           authenticate({ token: userData.token, userId: userData.userId })
         );
+        AsyncStorage.setItem("token", userData.token);
+        AsyncStorage.setItem("userId", userData.userId);
       } else {
         toast.show("Signin failed", {
           type: "danger",
@@ -142,6 +147,19 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
       }
     }
   };
+
+  const getStoredToken = async () => {
+    const token = await AsyncStorage.getItem("token");
+    const userId = await AsyncStorage.getItem("userId");
+
+    if (token && userId) {
+      dispatch(authenticate({ token, userId }));
+    }
+  };
+
+  useEffect(() => {
+    getStoredToken();
+  }, []);
 
   return (
     <View style={styles().container}>

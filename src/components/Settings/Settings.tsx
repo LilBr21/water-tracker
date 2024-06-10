@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { logout } from "../../actions/auth";
 import { Button, ButtonSizes } from "../../ui/Button";
@@ -17,6 +18,12 @@ export const Settings = () => {
     setIsModalOpen(false);
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+    AsyncStorage.removeItem("token");
+    AsyncStorage.removeItem("userId");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.changeGoalContainer}>
@@ -31,11 +38,7 @@ export const Settings = () => {
         />
         <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
       </View>
-      <Button
-        title="Log out"
-        onPress={() => dispatch(logout())}
-        size={ButtonSizes.S}
-      />
+      <Button title="Log out" onPress={handleLogout} size={ButtonSizes.S} />
     </View>
   );
 };

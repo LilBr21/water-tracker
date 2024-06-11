@@ -7,12 +7,23 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toast-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
+import * as Notifications from "expo-notifications";
 import { exchangeTokenForRefreshThunk } from "./src/actions/auth";
 import { store } from "./src/store/store";
 import Signup from "./src/components/Auth/Signup";
 import Signin from "./src/components/Auth/Signin";
 import { AppDispatch } from "./src/store/store";
 import { MyTabs } from "./src/components/BottomBar/BottomBar";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    };
+  },
+});
 
 const Stack = createNativeStackNavigator();
 

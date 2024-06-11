@@ -7,6 +7,7 @@ import { Button, ButtonSizes } from "../../ui/Button";
 import { colors } from "../../ui/constants/colors";
 import { GoalSetModal } from "../Modals/GoalSetModal";
 import { RootDataState } from "../../interfaces/store";
+import { NotificationsSetting } from "./Notifications/Notifications";
 
 export const Settings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,6 +39,7 @@ export const Settings = () => {
         />
         <GoalSetModal isVisible={isModalOpen} onClose={handleCloseModal} />
       </View>
+      <NotificationsSetting />
       <Button title="Log out" onPress={handleLogout} size={ButtonSizes.S} />
     </View>
   );

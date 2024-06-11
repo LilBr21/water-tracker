@@ -27,7 +27,7 @@ export interface DataState {
     isMonthlyProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     isDailyProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     isUpdateProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
-    error: string | null;
+    error: string | null | number;
 }
 
 const initialState: DataState = {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useDispatch } from "react-redux";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -25,6 +25,7 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
@@ -50,12 +51,17 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
     try {
       const userData = await createNewUser({ email, password });
 
-      if (userData?.token && userData?.userId) {
+      if (userData?.token && userData?.userId && userData?.refreshToken) {
         dispatch(
-          authenticate({ token: userData.token, userId: userData.userId })
+          authenticate({
+            token: userData.token,
+            userId: userData.userId,
+            refreshToken: userData.refreshToken,
+          })
         );
         AsyncStorage.setItem("token", userData.token);
         AsyncStorage.setItem("userId", userData.userId);
+        AsyncStorage.setItem("refreshToken", userData.refreshToken);
       } else {
         toast.show("Signup failed", {
           type: "danger",
@@ -76,12 +82,17 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
     try {
       const userData = await signInUser({ email, password });
 
-      if (userData?.token && userData?.userId) {
+      if (userData?.token && userData?.userId && userData?.refreshToken) {
         dispatch(
-          authenticate({ token: userData.token, userId: userData.userId })
+          authenticate({
+            token: userData.token,
+            userId: userData.userId,
+            refreshToken: userData.refreshToken,
+          })
         );
         AsyncStorage.setItem("token", userData.token);
         AsyncStorage.setItem("userId", userData.userId);
+        AsyncStorage.setItem("refreshToken", userData.refreshToken);
       } else {
         toast.show("Signin failed", {
           type: "danger",
@@ -149,17 +160,24 @@ export const AuthForm = ({ isOnLogin = false }: IProps) => {
   };
 
   const getStoredToken = async () => {
+    setIsLoading(true);
     const token = await AsyncStorage.getItem("token");
     const userId = await AsyncStorage.getItem("userId");
+    const refreshToken = await AsyncStorage.getItem("refreshToken");
 
-    if (token && userId) {
-      dispatch(authenticate({ token, userId }));
+    if (token && userId && refreshToken) {
+      dispatch(authenticate({ token, userId, refreshToken }));
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getStoredToken();
   }, []);
+
+  if (isLoading) {
+    return <ActivityIndicator size="large" color={colors.lightPrimary} />;
+  }
 
   return (
     <View style={styles().container}>

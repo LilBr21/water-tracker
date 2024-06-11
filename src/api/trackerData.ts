@@ -1,6 +1,7 @@
 import axios from "axios";
 import { DrinkType } from "../interfaces/drinks";
 
+
 export const setGoal = async (goal: number, userId: string, token: string) => {
     try {
         const response = axios.put(`https://water-tracker-2c238-default-rtdb.firebaseio.com/goals/${userId}.json?auth=${token}`, {
@@ -51,7 +52,7 @@ export const getDailyProgress = async (userId: string, year: string, month: stri
             juice: data.juice?.progress ?? 0,
             coffee: data.coffee?.progress ?? 0,
         };
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(`Failed to fetch daily progress, ${error}`);
     }
 }

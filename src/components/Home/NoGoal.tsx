@@ -1,14 +1,23 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Button } from "../../ui/Button";
 import { GoalSetModal } from "../Modals/GoalSetModal";
 import { colors } from "../../ui/constants/colors";
+import { AppDispatch } from "../../store/store";
+import { getUserGoalThunk } from "../../actions/data";
 
 export const NoGoal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const token = useSelector((state: any) => state.auth.token);
+  const userId = useSelector((state: any) => state.auth.userId);
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    dispatch(getUserGoalThunk({ userId, token })).unwrap();
   };
 
   return (

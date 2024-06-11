@@ -1,4 +1,4 @@
-import { Switch, View, Text, StyleSheet } from "react-native";
+import { Switch, View, Text, StyleSheet, Alert, Platform } from "react-native";
 import { useState } from "react";
 import * as Notifications from "expo-notifications";
 import { useToast } from "react-native-toast-notifications";
@@ -10,26 +10,58 @@ export const NotificationsSetting = () => {
 
   const toast = useToast();
 
+  async function configurePushNotifications() {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== "granted") {
+      const { status, canAskAgain } =
+        await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== "granted") {
+      Alert.alert(
+        "Permission required",
+        "Notifications need the appropriate permissions."
+      );
+      return false;
+    }
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.DEFAULT,
+      });
+    }
+
+    return true;
+  }
+
   const toggleSwitch = async () => {
     if (!isEnabled) {
-      const id = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Drink reminder",
-          body: "Time to drink some water!",
-        },
-        trigger: {
-          hour: 17,
-          minute: 0,
-          repeats: true,
-        },
-      });
-      setNotificationId(id);
-      setIsEnabled(true);
-      toast.show("Notifications enabled", {
-        type: "success",
-        placement: "top",
-        duration: 3000,
-      });
+      const hasPermission = await configurePushNotifications();
+      if (hasPermission) {
+        const id = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Drink reminder",
+            body: "Time to drink some water!",
+          },
+          trigger: {
+            hour: 17,
+            minute: 0,
+            repeats: true,
+          },
+        });
+        setNotificationId(id);
+        setIsEnabled(true);
+        toast.show("Notifications enabled", {
+          type: "success",
+          placement: "top",
+          duration: 3000,
+        });
+      }
     } else {
       if (notificationId) {
         await Notifications.cancelScheduledNotificationAsync(notificationId);

@@ -6,7 +6,8 @@ import { DailyProgressChart } from "../Charts/DailyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { AddProgressModal } from "../Modals/AddProgressModal/AddProgressModal";
 import { colors } from "../../ui/constants/colors";
-import { RootDataState, RootAuthState } from "../../interfaces/store";
+import { SectionCard } from "../../ui/SectionCard";
+import { RootDataState } from "../../interfaces/store";
 
 export const Progress = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,13 +51,15 @@ export const Progress = () => {
       </Text>
       <View style={styles(isPortrait).mainContentContainer}>
         <View style={styles(isPortrait).chartContainer}>
-          <DailyProgressChart
-            drankAmount={drankAmount}
-            drankWater={drankWater}
-            drankJuice={drankJuice}
-            drankCoffee={drankCoffee}
-            dailyGoal={userGoal}
-          />
+          <SectionCard>
+            <DailyProgressChart
+              drankAmount={drankAmount}
+              drankWater={drankWater}
+              drankJuice={drankJuice}
+              drankCoffee={drankCoffee}
+              dailyGoal={userGoal}
+            />
+          </SectionCard>
         </View>
         <View style={styles().buttonContainer}>
           <Button title="Add progress" onPress={() => setIsModalOpen(true)} />
@@ -73,7 +76,7 @@ export const Progress = () => {
 const styles = (isPortrait?: boolean) =>
   StyleSheet.create({
     text: {
-      color: colors.lightPrimary,
+      color: colors.darkPrimary,
       fontSize: 16,
       textAlign: "justify",
     },

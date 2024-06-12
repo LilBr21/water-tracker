@@ -1,5 +1,6 @@
 import { Text, Button, View, StyleSheet } from "react-native";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
+import { colors } from "../../ui/constants/colors";
 
 interface IProps {
   handleAuthModeSwitch: () => void;
@@ -21,13 +22,13 @@ const styles = (isPortrait: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#102C57",
+      backgroundColor: "transparent",
       alignItems: "flex-end",
       justifyContent: "flex-start",
       paddingHorizontal: isPortrait ? 12 : 42,
       paddingTop: isPortrait ? 0 : 24,
     },
     text: {
-      color: "#FEFAF6",
+      color: colors.darkPrimary,
     },
   });

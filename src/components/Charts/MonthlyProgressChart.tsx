@@ -151,10 +151,10 @@ export const MonthlyProgressChart = () => {
       style: {
         axis: {
           fill: colors.lightPrimary,
-          stroke: colors.lightPrimary,
+          stroke: colors.actionPrimary,
         },
         tickLabels: {
-          fill: colors.lightPrimary,
+          fill: colors.darkPrimary,
         },
         grid: {
           fill: "rgba(254, 250, 246, 0.1)",
@@ -185,7 +185,7 @@ export const MonthlyProgressChart = () => {
                 data={generateData()}
                 style={{
                   data: { fill: colors.actionPrimary },
-                  labels: { fill: colors.lightPrimary },
+                  labels: { fill: colors.darkPrimary },
                 }}
               />
             </VictoryChart>
@@ -198,13 +198,13 @@ export const MonthlyProgressChart = () => {
 
 const styles = StyleSheet.create({
   text: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     margin: 16,
     textAlign: "center",
   },
   date: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     textAlign: "center",
   },

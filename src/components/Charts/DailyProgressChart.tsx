@@ -125,9 +125,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 16,
   },
   text: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     fontWeight: "bold",
   },

@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { WeeklyProgressChart } from "../Charts/WeeklyProgressChart";
 import { MonthlyProgressChart } from "../Charts/MonthlyProgressChart";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
+import { SectionCard } from "../../ui/SectionCard";
 
 export const Statistics = () => {
   const { currentOrientation } = useOrientation();
@@ -9,8 +10,12 @@ export const Statistics = () => {
 
   return (
     <View style={styles(isPortrait).container}>
-      <WeeklyProgressChart />
-      <MonthlyProgressChart />
+      <SectionCard>
+        <WeeklyProgressChart />
+      </SectionCard>
+      <SectionCard>
+        <MonthlyProgressChart />
+      </SectionCard>
     </View>
   );
 };
@@ -19,7 +24,7 @@ const styles = (isPortrait?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#102C57",
+      backgroundColor: "transparent",
       gap: isPortrait ? 24 : 0,
       display: "flex",
       flexDirection: isPortrait ? "column" : "row",

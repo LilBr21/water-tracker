@@ -71,8 +71,9 @@ const styles = (isDrinkChosen: boolean) =>
       marginBottom: 4,
     },
     drinkButtonText: {
-      color: colors.lightPrimary,
-      fontSize: 10,
+      color: colors.darkPrimary,
+      fontSize: 12,
+      marginTop: 2,
       textAlign: "center",
     },
   });

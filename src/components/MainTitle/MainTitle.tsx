@@ -46,7 +46,7 @@ const styles = (
       justifyContent: "flex-start",
     },
     text: {
-      color: colors.lightPrimary,
+      color: colors.darkPrimary,
       fontSize: isOnHome ? 24 : 36,
       fontFamily: fontsLoaded ? "Pacifico-Refular" : "",
     },

@@ -73,7 +73,7 @@ const styles = (currentOrientation: Orientation) =>
     },
     text: {
       fontSize: 12,
-      color: colors.lightPrimary,
+      color: colors.darkPrimary,
       textAlign: "left",
       width: "100%",
       paddingLeft: currentOrientation === Orientation.PORTRAIT ? 20 : 36,

@@ -1,8 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
+import { LinearGradient } from "expo-linear-gradient";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toast-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -31,9 +32,9 @@ function AuthStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#102C57" },
+        headerStyle: { backgroundColor: "transparent" },
+        contentStyle: { backgroundColor: "transparent" },
         headerTintColor: "#FEFAF6",
-        contentStyle: { backgroundColor: "#102C57" },
       }}
     >
       <Stack.Screen
@@ -82,12 +83,17 @@ export default function App() {
     <ToastProvider>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <SafeAreaView style={styles.container}>
-            <GestureHandlerRootView>
-              <StatusBar style="auto" />
-              <Navigation />
-            </GestureHandlerRootView>
-          </SafeAreaView>
+          <LinearGradient
+            colors={["#ccfff9", "#73b4ff"]}
+            style={styles.gradient}
+          >
+            <SafeAreaView style={{ flex: 1 }}>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <StatusBar style="auto" />
+                <Navigation />
+              </GestureHandlerRootView>
+            </SafeAreaView>
+          </LinearGradient>
         </QueryClientProvider>
       </Provider>
     </ToastProvider>
@@ -95,11 +101,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  gradient: {
     flex: 1,
-    backgroundColor: "#102C57",
-  },
-  text: {
-    color: "#FEFAF6",
   },
 });

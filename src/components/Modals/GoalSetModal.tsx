@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
+import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "../../ui/Input";
 import { colors } from "../../ui/constants/colors";
 import { Button } from "../../ui/Button";
@@ -61,7 +62,10 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
       visible={isVisible}
       supportedOrientations={["portrait", "landscape"]}
     >
-      <View style={styles(isPortrait).container}>
+      <LinearGradient
+        style={styles().container}
+        colors={["#ccfff9", "#73b4ff"]}
+      >
         <TouchableOpacity
           style={styles(isPortrait).iconContainer}
           onPress={onClose}
@@ -70,7 +74,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
           <MaterialCommunityIcons
             name="close"
             size={32}
-            color={colors.lightPrimary}
+            color={colors.darkPrimary}
           />
         </TouchableOpacity>
         <Text style={styles(isPortrait).text}>Set your daily goal.</Text>
@@ -93,7 +97,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
             textColor={colors.lightPrimary}
           />
         </View>
-      </View>
+      </LinearGradient>
     </Modal>
   );
 };
@@ -104,7 +108,7 @@ const styles = (isPortrait?: boolean) =>
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: colors.darkPrimary,
+      backgroundColor: "transparent",
     },
     iconContainer: {
       position: "absolute",
@@ -119,7 +123,7 @@ const styles = (isPortrait?: boolean) =>
       padding: 36,
     },
     text: {
-      color: colors.lightPrimary,
+      color: colors.darkPrimary,
       fontSize: 16,
       paddingHorizontal: 40,
       paddingVertical: 8,

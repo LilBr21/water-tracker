@@ -143,7 +143,7 @@ export const WeeklyProgressChart = () => {
       return {
         x: getPastWeekDays(currentDay)[index],
         y: day,
-        label: day,
+        label: day === 0 ? "" : day,
       };
     });
   };
@@ -158,10 +158,10 @@ export const WeeklyProgressChart = () => {
       style: {
         axis: {
           fill: colors.lightPrimary,
-          stroke: colors.lightPrimary,
+          stroke: colors.darkPrimary,
         },
         tickLabels: {
-          fill: colors.lightPrimary,
+          fill: colors.darkPrimary,
         },
         grid: {
           fill: "rgba(254, 250, 246, 0.1)",
@@ -192,7 +192,7 @@ export const WeeklyProgressChart = () => {
                 data={generateData().reverse()}
                 style={{
                   data: { fill: colors.actionPrimary },
-                  labels: { fill: colors.lightPrimary },
+                  labels: { fill: colors.darkPrimary },
                 }}
               />
             </VictoryChart>
@@ -205,13 +205,13 @@ export const WeeklyProgressChart = () => {
 
 const styles = StyleSheet.create({
   text: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     margin: 16,
     textAlign: "center",
   },
   date: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     textAlign: "center",
   },

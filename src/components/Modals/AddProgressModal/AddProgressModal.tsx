@@ -3,8 +3,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { format, getMonth, getYear } from "date-fns";
+import { useFonts } from "expo-font";
 import { Input } from "../../../ui/Input";
 import { colors } from "../../../ui/constants/colors";
 import { Button } from "../../../ui/Button";
@@ -38,6 +39,10 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const toast = useToast();
+
+  const [fontsLoaded] = useFonts({
+    "Pacifico-Refular": require("../../../assets/fonts/Pacifico-Regular.ttf"),
+  });
 
   const handleChooseDrink = (drink: DrinkType) => {
     setChosenDrink(drink);
@@ -95,7 +100,10 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
       visible={isVisible}
       supportedOrientations={["portrait", "landscape"]}
     >
-      <View style={styles().container}>
+      <LinearGradient
+        style={styles().container}
+        colors={["#ccfff9", "#73b4ff"]}
+      >
         <TouchableOpacity
           style={styles(isPortrait).iconContainer}
           onPress={onClose}
@@ -104,10 +112,12 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           <MaterialCommunityIcons
             name="close"
             size={32}
-            color={colors.lightPrimary}
+            color={colors.darkPrimary}
           />
         </TouchableOpacity>
-        <Text style={styles(isPortrait).text}>Add daily progress.</Text>
+        <Text style={styles(isPortrait, fontsLoaded).heading}>
+          Add daily progress.
+        </Text>
         <View style={styles(isPortrait).drinkButtonsContainer}>
           <WaterButton
             chosenDrink={chosenDrink}
@@ -141,18 +151,17 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
             textColor={colors.lightPrimary}
           />
         </View>
-      </View>
+      </LinearGradient>
     </Modal>
   );
 };
 
-const styles = (isPortrait?: boolean, isDrinkChosen?: boolean) =>
+const styles = (isPortrait?: boolean, fontsLoaded?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: colors.darkPrimary,
     },
     iconContainer: {
       position: "absolute",
@@ -166,8 +175,14 @@ const styles = (isPortrait?: boolean, isDrinkChosen?: boolean) =>
       width: isPortrait ? "100%" : "60%",
       padding: 36,
     },
+    heading: {
+      color: colors.darkPrimary,
+      fontSize: 24,
+      padding: 16,
+      fontFamily: fontsLoaded ? "Pacifico-Refular" : "",
+    },
     text: {
-      color: colors.lightPrimary,
+      color: colors.darkPrimary,
       fontSize: 16,
       paddingHorizontal: 40,
       paddingVertical: 8,
@@ -181,24 +196,5 @@ const styles = (isPortrait?: boolean, isDrinkChosen?: boolean) =>
       alignItems: "center",
       width: "100%",
       paddingVertical: 32,
-    },
-    drinkButton: {
-      backgroundColor: isDrinkChosen
-        ? "rgba(254, 250, 246, 0.8)"
-        : "rgba(254, 250, 246, 0.5)",
-      borderColor: colors.lightPrimary,
-      borderWidth: 2,
-      borderRadius: 50,
-      width: 64,
-      height: 64,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      marginBottom: 4,
-    },
-    drinkButtonText: {
-      color: colors.lightPrimary,
-      fontSize: 10,
-      textAlign: "center",
     },
   });

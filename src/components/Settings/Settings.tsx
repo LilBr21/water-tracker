@@ -57,11 +57,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
   },
   goalText: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     fontWeight: "700",
     marginRight: 20,

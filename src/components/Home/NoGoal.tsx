@@ -37,7 +37,7 @@ export const NoGoal = () => {
 
 const styles = StyleSheet.create({
   text: {
-    color: colors.lightPrimary,
+    color: colors.darkPrimary,
     fontSize: 16,
     textAlign: "justify",
   },

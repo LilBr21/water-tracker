@@ -15,13 +15,15 @@ export const MyTabs = () => {
       sceneContainerStyle={styles.container}
       screenOptions={{
         headerShown: false,
-        tabBarActiveBackgroundColor: colors.actionPrimary,
+        tabBarActiveBackgroundColor: "transparent",
         tabBarActiveTintColor: colors.lightPrimary,
-        tabBarInactiveBackgroundColor: "#102C57",
+        tabBarInactiveTintColor: colors.darkPrimary,
+        tabBarInactiveBackgroundColor: "transparent",
         tabBarStyle: {
           paddingBottom: 0,
           borderRadius: 8,
           height: 64,
+          backgroundColor: "transparent",
         },
       }}
     >
@@ -34,7 +36,7 @@ export const MyTabs = () => {
             <AntDesign
               name="home"
               size={24}
-              color={focused ? colors.lightPrimary : colors.actionPrimary}
+              color={focused ? colors.lightPrimary : colors.darkPrimary}
             />
           ),
           tabBarLabelStyle: { marginBottom: 8 },
@@ -49,7 +51,7 @@ export const MyTabs = () => {
             <AntDesign
               name="barschart"
               size={24}
-              color={focused ? colors.lightPrimary : colors.actionPrimary}
+              color={focused ? colors.lightPrimary : colors.darkPrimary}
             />
           ),
           tabBarLabelStyle: { marginBottom: 8 },
@@ -64,7 +66,7 @@ export const MyTabs = () => {
             <AntDesign
               name="setting"
               size={24}
-              color={focused ? colors.lightPrimary : colors.actionPrimary}
+              color={focused ? colors.lightPrimary : colors.darkPrimary}
             />
           ),
           tabBarLabelStyle: { marginBottom: 8 },
@@ -76,7 +78,7 @@ export const MyTabs = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.darkPrimary,
+    backgroundColor: "transparent",
     paddingBottom: 0,
   },
 });

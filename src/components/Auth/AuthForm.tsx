@@ -228,7 +228,7 @@ const styles = (isPortrait?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#102C57",
+      backgroundColor: "transparent",
     },
     contentContainer: {
       flex: 5,

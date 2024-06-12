@@ -103,7 +103,11 @@ export const WeeklyProgressChart = () => {
   const handleSetWeeklyProgress = async () => {
     const weeklyProgressData = await getWeeklyProgress();
     if (weeklyProgressData && weeklyProgressData.length > 0) {
-      setWeeklyProgress(weeklyProgressData);
+      const formattedProgress = weeklyProgressData.map(
+        (day) => day.coffee + day.juice + day.water
+      );
+      console.log(formattedProgress);
+      setWeeklyProgress(formattedProgress);
     }
   };
 
@@ -135,13 +139,19 @@ export const WeeklyProgressChart = () => {
       return [];
     }
     return weeklyProgress.map((day, index) => {
+      console.log(day);
       return {
         x: getPastWeekDays(currentDay)[index],
-        y: day.water + day.juice + day.coffee,
-        label: day.water + day.juice + day.coffee,
+        y: day,
+        label: day,
       };
     });
   };
+
+  const showNoData =
+    weeklyProgress?.length === 0 ||
+    !weeklyProgress ||
+    weeklyProgress.every((day) => day === 0);
 
   const chartTheme = {
     axis: {
@@ -174,15 +184,19 @@ export const WeeklyProgressChart = () => {
           {fromFormatted} - {toFormatted}
         </Text>
         <View>
-          <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
-            <VictoryBar
-              data={generateData().reverse()}
-              style={{
-                data: { fill: colors.actionPrimary },
-                labels: { fill: colors.lightPrimary },
-              }}
-            />
-          </VictoryChart>
+          {showNoData ? (
+            <Text style={styles.text}>No data for this week</Text>
+          ) : (
+            <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
+              <VictoryBar
+                data={generateData().reverse()}
+                style={{
+                  data: { fill: colors.actionPrimary },
+                  labels: { fill: colors.lightPrimary },
+                }}
+              />
+            </VictoryChart>
+          )}
         </View>
       </View>
     </GestureDetector>

@@ -1,4 +1,4 @@
-import { View, StyleSheet, useWindowDimensions } from "react-native";
+import { View, StyleSheet, useWindowDimensions, Text } from "react-native";
 import { useEffect, useState } from "react";
 import {
   VictoryPie,
@@ -7,6 +7,7 @@ import {
   VictoryAxis,
 } from "victory-native";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
+import Star from "../../assets/star.svg";
 import { colors } from "../../ui/constants/colors";
 
 interface IProps {
@@ -48,8 +49,26 @@ export const DailyProgressChart = ({
     setDrankInTotal((drankAmount / dailyGoal) * 100);
   }, [drankAmount, dailyGoal, drankWater, drankJuice, drankCoffee]);
 
+  const isGoalCompleted = drankInTotal > 100;
+
+  const waterColor = isGoalCompleted
+    ? colors.successPrimary
+    : colors.actionPrimary;
+  const juiceColor = isGoalCompleted
+    ? colors.successPrimary
+    : colors.orangePrimary;
+  const coffeeColor = isGoalCompleted
+    ? colors.successPrimary
+    : colors.brownPrimary;
+
   return (
     <View style={styles.container}>
+      {isGoalCompleted && (
+        <View style={styles.congratsContainer}>
+          <Star width="64" height="64" />
+          <Text style={styles.text}>Congrats! Goal completed</Text>
+        </View>
+      )}
       <VictoryChart
         height={isPortrait ? windowWidth - 40 : windowHeight - 200}
         width={isPortrait ? windowWidth - 40 : windowHeight - 200}
@@ -58,9 +77,9 @@ export const DailyProgressChart = ({
           standalone={false}
           animate={{ duration: 1000 }}
           data={[
-            { x: 1, y: chartData.water, color: colors.actionPrimary },
-            { x: 2, y: chartData.juice, color: colors.orangePrimary },
-            { x: 3, y: chartData.coffee, color: colors.brownPrimary },
+            { x: 1, y: chartData.water, color: waterColor },
+            { x: 2, y: chartData.juice, color: juiceColor },
+            { x: 3, y: chartData.coffee, color: coffeeColor },
             { x: 4, y: 100 - drankInTotal, color: colors.lightPrimary },
           ]}
           innerRadius={isPortrait ? 120 : 55}
@@ -86,7 +105,7 @@ export const DailyProgressChart = ({
           style={{
             fontSize: isPortrait ? 40 : 32,
             fill: `${
-              drankInTotal > 100 ? colors.successPrimary : colors.actionPrimary
+              isGoalCompleted ? colors.successPrimary : colors.actionPrimary
             }`,
           }}
         />
@@ -100,5 +119,16 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  congratsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    color: colors.lightPrimary,
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

@@ -1,6 +1,14 @@
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
@@ -12,6 +20,7 @@ import { setGoalThunk } from "../../actions/data";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { RootAuthState } from "../../interfaces/store";
 import { AppDispatch } from "../../store/store";
+import { goalValues } from "../../constants/goalValues";
 
 interface IProps {
   isVisible: boolean;
@@ -20,9 +29,14 @@ interface IProps {
 
 export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
+  const [selectedItem, setSelectedItem] = useState(0);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
   const token = useSelector((state: RootAuthState) => state.auth.token);
+
+  const [fontsLoaded] = useFonts({
+    "Pacifico-Refular": require("../../assets/fonts/Pacifico-Regular.ttf"),
+  });
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
@@ -57,6 +71,14 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
     }
   };
 
+  const onViewableItemsChanged = ({ viewableItems, changed }: any) => {
+    console.log("Visible items are", viewableItems);
+    if (viewableItems[1].item) {
+      setSelectedItem(viewableItems[1].item);
+    }
+    console.log("Changed in this iteration", changed);
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -77,11 +99,46 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
             color={colors.darkPrimary}
           />
         </TouchableOpacity>
-        <Text style={styles(isPortrait).text}>Set your daily goal.</Text>
+        <Text style={styles(isPortrait, fontsLoaded).heading}>
+          Set your daily goal.
+        </Text>
         <Text style={styles(isPortrait).text}>
           How much water do you want to drink?
         </Text>
+        <View style={styles().listContainer}>
+          <FlatList
+            style={styles().list}
+            data={goalValues}
+            keyExtractor={(item) => item.toString()}
+            renderItem={({ item }) => {
+              const isSelected = selectedItem === item;
+
+              return (
+                <TouchableOpacity
+                  onPress={() => setChosenAmmount(item)}
+                  style={
+                    styles(isPortrait, fontsLoaded, isSelected)
+                      .listItemContainer
+                  }
+                >
+                  <Text
+                    style={styles(isPortrait, fontsLoaded, isSelected).listText}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 50,
+            }}
+          />
+        </View>
         <View style={styles(isPortrait).inputContainer}>
+          <Text style={styles(isPortrait).text}>
+            or enter your own ammount:
+          </Text>
           <Input
             inputMode="numeric"
             keyboardType="numeric"
@@ -102,13 +159,18 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   );
 };
 
-const styles = (isPortrait?: boolean) =>
+const styles = (
+  isPortrait?: boolean,
+  fontsLoaded?: boolean,
+  isSelected?: boolean
+) =>
   StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: "transparent",
+      gap: 16,
     },
     iconContainer: {
       position: "absolute",
@@ -117,17 +179,47 @@ const styles = (isPortrait?: boolean) =>
     },
     inputContainer: {
       width: isPortrait ? "100%" : "60%",
+      marginTop: 20,
     },
     buttonContainer: {
       width: isPortrait ? "100%" : "60%",
       padding: 36,
     },
+    listContainer: {
+      height: 150,
+      width: "85%",
+      borderRadius: 8,
+      paddingHorizontal: 36,
+      backgroundColor: colors.lightPrimary,
+    },
+    list: {
+      flex: 1,
+    },
+    listItemContainer: {
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.darkPrimary,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: isSelected ? colors.actionPrimary : colors.lightPrimary,
+    },
+    listText: {
+      fontWeight: isSelected ? "bold" : "normal",
+      color: isSelected ? colors.lightPrimary : colors.darkPrimary,
+    },
     text: {
       color: colors.darkPrimary,
       fontSize: 16,
       paddingHorizontal: 40,
-      paddingVertical: 8,
       width: "100%",
       textAlign: isPortrait ? "left" : "center",
+    },
+    heading: {
+      color: colors.darkPrimary,
+      fontSize: 24,
+      textAlign: "center",
+      fontFamily: fontsLoaded ? "Pacifico-Refular" : "",
+      marginBottom: 32,
     },
   });

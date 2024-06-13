@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
-import { VictoryChart, VictoryBar } from "victory-native";
+import { VictoryChart, VictoryBar, VictoryStack } from "victory-native";
 import { getDay, format, subDays, getMonth, getYear } from "date-fns";
 import {
   Gesture,
@@ -20,6 +20,7 @@ export const WeeklyProgressChart = () => {
   const [pastWeeks, setPastWeeks] = useState(0);
   const [toFormatted, setToFormatted] = useState("");
   const [fromFormatted, setFromFormatted] = useState("");
+  const [totalProgress, setTotalProgress] = useState<null | number[]>(null);
 
   const year = getYear(new Date()).toString();
   const month = getMonth(new Date()).toString();
@@ -106,8 +107,8 @@ export const WeeklyProgressChart = () => {
       const formattedProgress = weeklyProgressData.map(
         (day) => day.coffee + day.juice + day.water
       );
-      console.log(formattedProgress);
-      setWeeklyProgress(formattedProgress);
+      setTotalProgress(formattedProgress);
+      setWeeklyProgress(weeklyProgressData);
     }
   };
 
@@ -138,20 +139,22 @@ export const WeeklyProgressChart = () => {
     if (!weeklyProgress) {
       return [];
     }
-    return weeklyProgress.map((day, index) => {
-      console.log(day);
-      return {
-        x: getPastWeekDays(currentDay)[index],
-        y: day,
-        label: day === 0 ? "" : day,
-      };
+
+    return weeklyProgress.flatMap((day, index) => {
+      const xValue = getPastWeekDays(currentDay)[index];
+      return Object.keys(day).map((key) => {
+        return {
+          x: xValue,
+          y: day[key],
+        };
+      });
     });
   };
 
   const showNoData =
-    weeklyProgress?.length === 0 ||
-    !weeklyProgress ||
-    weeklyProgress.every((day) => day === 0);
+    totalProgress?.length === 0 ||
+    !totalProgress ||
+    totalProgress.every((day) => day === 0);
 
   const chartTheme = {
     axis: {
@@ -173,7 +176,7 @@ export const WeeklyProgressChart = () => {
   };
 
   if (isLoading) {
-    return <ActivityIndicator size="large" color={colors.lightPrimary} />;
+    return <ActivityIndicator size="large" color={colors.darkPrimary} />;
   }
 
   return (
@@ -188,13 +191,19 @@ export const WeeklyProgressChart = () => {
             <Text style={styles.text}>No data for this week</Text>
           ) : (
             <VictoryChart theme={chartTheme} domainPadding={{ x: 15 }}>
-              <VictoryBar
-                data={generateData().reverse()}
-                style={{
-                  data: { fill: colors.actionPrimary },
-                  labels: { fill: colors.darkPrimary },
-                }}
-              />
+              <VictoryStack
+                colorScale={[
+                  `${colors.brownPrimary}`,
+                  `${colors.orangePrimary}`,
+                  `${colors.actionPrimary}`,
+                ]}
+              >
+                {generateData()
+                  .reverse()
+                  .map((day, i) => (
+                    <VictoryBar key={i} data={[day]} />
+                  ))}
+              </VictoryStack>
             </VictoryChart>
           )}
         </View>

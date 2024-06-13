@@ -90,6 +90,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: "space-between",
   },
   text: {
     color: colors.darkPrimary,

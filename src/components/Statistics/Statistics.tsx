@@ -28,5 +28,6 @@ const styles = (isPortrait?: boolean) =>
       gap: isPortrait ? 24 : 0,
       display: "flex",
       flexDirection: isPortrait ? "column" : "row",
+      paddingHorizontal: 16,
     },
   });

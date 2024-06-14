@@ -22,3 +22,5 @@ export const goalValues = [
     2700,
     3000
 ]
+
+export const drankValues = [100, 150, 200, 250, 300, 350, 400, ...goalValues]

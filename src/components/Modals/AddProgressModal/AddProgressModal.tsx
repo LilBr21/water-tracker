@@ -14,6 +14,7 @@ import { useOrientation, Orientation } from "../../../hooks/useOrientation";
 import { RootAuthState, RootDataState } from "../../../interfaces/store";
 import { AppDispatch } from "../../../store/store";
 import { DrinkType } from "../../../interfaces/drinks";
+import { AmmountList } from "../../List/AmmountList";
 import { WaterButton } from "./DrinkButtons/WaterButton";
 import { JuiceButton } from "./DrinkButtons/JuiceButton";
 import { CoffeeButton } from "./DrinkButtons/CoffeeButton";
@@ -25,6 +26,7 @@ interface IProps {
 
 export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
+  const [selectedAmmount, setSelectedAmmount] = useState(0);
   const [chosenDrink, setChosenDrink] = useState(DrinkType.WATER);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
@@ -52,6 +54,10 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
     setChosenAmmount(parseInt(ammount));
   };
 
+  const handleSelectAmmount = (ammount: number) => {
+    setSelectedAmmount(ammount);
+  };
+
   const getDrankToday = () => {
     switch (chosenDrink) {
       case DrinkType.WATER:
@@ -70,7 +76,8 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
     const month = getMonth(new Date()).toString();
     const date = format(new Date(), "dd-MM-yyyy");
     const drankToday = getDrankToday();
-    const totalDailyProgress = drankToday + chosenAmmount;
+    const ammountToAdd = chosenAmmount > 0 ? chosenAmmount : selectedAmmount;
+    const totalDailyProgress = drankToday + ammountToAdd;
 
     try {
       await dispatch(
@@ -116,7 +123,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           />
         </TouchableOpacity>
         <Text style={styles(isPortrait, fontsLoaded).heading}>
-          Add daily progress.
+          Add daily progress
         </Text>
         <View style={styles(isPortrait).drinkButtonsContainer}>
           <WaterButton
@@ -132,10 +139,17 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
             handleChooseDrink={handleChooseDrink}
           />
         </View>
-        <Text style={styles(isPortrait).text}>
+        <Text style={styles(isPortrait).centeredText}>
           How much {chosenDrink} did you drink?
         </Text>
+        <Text style={styles(isPortrait).text}>Choose from the list:</Text>
+        <View style={styles(isPortrait).listContainer}>
+          <AmmountList handleSelectAmmount={handleSelectAmmount} />
+        </View>
         <View style={styles(isPortrait).inputContainer}>
+          <Text style={styles(isPortrait).text}>
+            or enter your own ammount:
+          </Text>
           <Input
             inputMode="numeric"
             keyboardType="numeric"
@@ -168,8 +182,17 @@ const styles = (isPortrait?: boolean, fontsLoaded?: boolean) =>
       top: 52,
       right: isPortrait ? 20 : 120,
     },
+    listContainer: {
+      height: 75,
+      width: "85%",
+      borderRadius: 8,
+      paddingHorizontal: 36,
+      backgroundColor: colors.lightPrimary,
+      marginTop: 16,
+    },
     inputContainer: {
       width: isPortrait ? "100%" : "60%",
+      marginTop: 20,
     },
     buttonContainer: {
       width: isPortrait ? "100%" : "60%",
@@ -181,11 +204,18 @@ const styles = (isPortrait?: boolean, fontsLoaded?: boolean) =>
       padding: 16,
       fontFamily: fontsLoaded ? "Pacifico-Refular" : "",
     },
+    centeredText: {
+      color: colors.darkPrimary,
+      fontSize: 18,
+      paddingHorizontal: 40,
+      marginBottom: 16,
+      width: "100%",
+      textAlign: "center",
+    },
     text: {
       color: colors.darkPrimary,
-      fontSize: 16,
+      fontSize: 14,
       paddingHorizontal: 40,
-      paddingVertical: 8,
       width: "100%",
       textAlign: isPortrait ? "left" : "center",
     },

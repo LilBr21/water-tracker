@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { FlatList, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { colors } from "../../ui/constants/colors";
-import { goalValues } from "../../constants/goalValues";
+import { goalValues, drankValues } from "../../constants/goalValues";
 
 interface IProps {
   handleSelectAmmount: (ammount: number) => void;
+  settingGoal?: boolean;
 }
 
-export const AmmountList = ({ handleSelectAmmount }: IProps) => {
+export const AmmountList = ({
+  handleSelectAmmount,
+  settingGoal = false,
+}: IProps) => {
   const [selectedItem, setSelectedItem] = useState(goalValues[0]);
 
   const onViewableItemsChanged = ({ viewableItems }: any) => {
@@ -17,10 +21,12 @@ export const AmmountList = ({ handleSelectAmmount }: IProps) => {
     }
   };
 
+  const data = settingGoal ? goalValues : drankValues;
+
   return (
     <FlatList
       style={styles().list}
-      data={goalValues}
+      data={data}
       keyExtractor={(item) => item.toString()}
       renderItem={({ item }) => {
         const isSelected = selectedItem === item;

@@ -100,7 +100,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
           How much water do you want to drink?
         </Text>
         <View style={styles().listContainer}>
-          <AmmountList handleSelectAmmount={handleSelectAmmount} />
+          <AmmountList handleSelectAmmount={handleSelectAmmount} settingGoal />
         </View>
         <View style={styles(isPortrait).inputContainer}>
           <Text style={styles(isPortrait).text}>

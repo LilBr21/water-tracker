@@ -120,7 +120,7 @@ const dataSlice = createSlice({
                 state.isGoalLoading = 'pending';
             })
             .addCase(setGoalThunk.fulfilled, (state, action: PayloadAction<any>) => {
-                state.userGoal = action.payload;
+                state.userGoal = action.payload.goal;
                 state.isGoalLoading = 'succeeded';
             })
             .addCase(setGoalThunk.rejected, (state, action) => {

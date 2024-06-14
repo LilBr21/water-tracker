@@ -1,11 +1,4 @@
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { Modal, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
@@ -20,7 +13,7 @@ import { setGoalThunk } from "../../actions/data";
 import { useOrientation, Orientation } from "../../hooks/useOrientation";
 import { RootAuthState } from "../../interfaces/store";
 import { AppDispatch } from "../../store/store";
-import { goalValues } from "../../constants/goalValues";
+import { AmmountList } from "../List/AmmountList";
 
 interface IProps {
   isVisible: boolean;
@@ -29,7 +22,7 @@ interface IProps {
 
 export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const [chosenAmmount, setChosenAmmount] = useState(0);
-  const [selectedItem, setSelectedItem] = useState(0);
+  const [selectedAmmount, setSelectedAmmount] = useState(0);
 
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
   const token = useSelector((state: RootAuthState) => state.auth.token);
@@ -45,6 +38,10 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
 
   const dispatch = useDispatch<AppDispatch>();
 
+  const handleSelectAmmount = (ammount: number) => {
+    setSelectedAmmount(ammount);
+  };
+
   const handleSetGoal = (ammount: string) => {
     setChosenAmmount(parseInt(ammount));
   };
@@ -52,7 +49,11 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   const handleSaveGoal = async () => {
     try {
       await dispatch(
-        setGoalThunk({ goal: chosenAmmount, userId, token })
+        setGoalThunk({
+          goal: chosenAmmount > 0 ? chosenAmmount : selectedAmmount,
+          userId,
+          token,
+        })
       ).unwrap();
 
       toast.show("Goal set!", {
@@ -67,16 +68,9 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
         duration: 4000,
       });
     } finally {
+      setChosenAmmount(0);
       onClose();
     }
-  };
-
-  const onViewableItemsChanged = ({ viewableItems, changed }: any) => {
-    console.log("Visible items are", viewableItems);
-    if (viewableItems[1].item) {
-      setSelectedItem(viewableItems[1].item);
-    }
-    console.log("Changed in this iteration", changed);
   };
 
   return (
@@ -106,34 +100,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
           How much water do you want to drink?
         </Text>
         <View style={styles().listContainer}>
-          <FlatList
-            style={styles().list}
-            data={goalValues}
-            keyExtractor={(item) => item.toString()}
-            renderItem={({ item }) => {
-              const isSelected = selectedItem === item;
-
-              return (
-                <TouchableOpacity
-                  onPress={() => setChosenAmmount(item)}
-                  style={
-                    styles(isPortrait, fontsLoaded, isSelected)
-                      .listItemContainer
-                  }
-                >
-                  <Text
-                    style={styles(isPortrait, fontsLoaded, isSelected).listText}
-                  >
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 50,
-            }}
-          />
+          <AmmountList handleSelectAmmount={handleSelectAmmount} />
         </View>
         <View style={styles(isPortrait).inputContainer}>
           <Text style={styles(isPortrait).text}>
@@ -159,11 +126,7 @@ export const GoalSetModal = ({ isVisible, onClose }: IProps) => {
   );
 };
 
-const styles = (
-  isPortrait?: boolean,
-  fontsLoaded?: boolean,
-  isSelected?: boolean
-) =>
+const styles = (isPortrait?: boolean, fontsLoaded?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -186,27 +149,11 @@ const styles = (
       padding: 36,
     },
     listContainer: {
-      height: 150,
+      height: 75,
       width: "85%",
       borderRadius: 8,
       paddingHorizontal: 36,
       backgroundColor: colors.lightPrimary,
-    },
-    list: {
-      flex: 1,
-    },
-    listItemContainer: {
-      padding: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.darkPrimary,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: isSelected ? colors.actionPrimary : colors.lightPrimary,
-    },
-    listText: {
-      fontWeight: isSelected ? "bold" : "normal",
-      color: isSelected ? colors.lightPrimary : colors.darkPrimary,
     },
     text: {
       color: colors.darkPrimary,

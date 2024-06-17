@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FlatList, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { colors } from "../../ui/constants/colors";
-import { goalValues, drankValues } from "../../constants/goalValues";
+import { goalValues, drankValues } from "../../constants/drinkValues";
 
 interface IProps {
   handleSelectAmmount: (ammount: number) => void;

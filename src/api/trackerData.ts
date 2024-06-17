@@ -1,5 +1,6 @@
 import axios from "axios";
 import { DrinkType } from "../interfaces/drinks";
+import { parse, subDays, format, getMonth, getYear } from 'date-fns';
 
 
 export const setGoal = async (goal: number, userId: string, token: string) => {
@@ -54,6 +55,35 @@ export const getDailyProgress = async (userId: string, year: string, month: stri
         };
     } catch (error: any) {
         throw new Error(`Failed to fetch daily progress, ${error}`);
+    }
+}
+
+export const getStreak = async (userId: string, token: string, date: string, goal: number) => {
+    try {
+        let streak = 0;
+        let currentDate = parse(`${date}`, 'dd-MM-yyyy', new Date());
+
+        while (true) {
+            const formattedDate = format(currentDate, 'dd-MM-yyyy');
+            const year = getYear(currentDate).toString();
+            const month = getMonth(currentDate).toString();
+
+            const response = await getDailyProgress(userId, year, month, formattedDate, token);
+            const data = response;
+
+            const totalDrinks = data.water + data.juice + data.coffee;
+
+            if (totalDrinks >= goal) {
+                streak++;
+                currentDate = subDays(currentDate, 1);
+            } else {
+                break;
+            }
+        }
+
+        return streak;
+    } catch (error) {
+        throw new Error(`Failed to fetch streak, ${error}`);
     }
 }
 

@@ -8,12 +8,12 @@ import { Progress } from "./Progress";
 import { NoGoal } from "./NoGoal";
 import { AppDispatch } from "../../store/store";
 import { getUserGoalThunk, getDailyProgressThunk } from "../../actions/data";
-import { RootDataState } from "../../interfaces/store";
+import { RootDataState, RootAuthState } from "../../interfaces/store";
 
 export const Home = () => {
-  const userGoal = useSelector((state: any) => state.data.userGoal);
-  const token = useSelector((state: any) => state.auth.token);
-  const userId = useSelector((state: any) => state.auth.userId);
+  const userGoal = useSelector((state: RootDataState) => state.data.userGoal);
+  const token = useSelector((state: RootAuthState) => state.auth.token);
+  const userId = useSelector((state: RootAuthState) => state.auth.userId);
   const isGoalLoading = useSelector(
     (state: RootDataState) => state.data.isGoalLoading
   );

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { getUserGoal, getDailyProgress, getMonthlyProgress, updateDailyProgress, setGoal } from '../api/trackerData';
+import { getUserGoal, getDailyProgress, getStreak, getMonthlyProgress, updateDailyProgress, setGoal } from '../api/trackerData';
 import { DrinkType } from '../interfaces/drinks';
 
 interface IDailyProgress {
@@ -23,6 +23,7 @@ export interface DataState {
     userGoal: number;
     monthlyProgress: MonthlyProgress | null;
     dailyProgress: IDailyProgress;
+    streak: number;
     isGoalLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     isMonthlyProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
     isDailyProgressLoading: 'idle' | 'pending' | 'succeeded' | 'failed';
@@ -38,6 +39,7 @@ const initialState: DataState = {
         coffee: 0,
     },
     monthlyProgress: null,
+    streak: 0,
     isGoalLoading: 'idle',
     isDailyProgressLoading: 'idle',
     isUpdateProgressLoading: 'idle',
@@ -76,6 +78,19 @@ export const setGoalThunk = createAsyncThunk<number, { goal: number; userId: str
     async ({ userId, year, month, date, token }, { rejectWithValue }) => {
       try {
         const response = await getDailyProgress(userId, year, month, date, token);
+        return response;
+      } catch (err: any) {
+        return rejectWithValue(err.response.data);
+      }
+    }
+  );
+
+  export const getStreakThunk = createAsyncThunk<number, { userId: string; token: string; date: string; goal: number }>(
+    'data/getStreak',
+    async ({ userId, token, date, goal }, { rejectWithValue }) => {
+      try {
+        const response = await getStreak(userId, token, date, goal);
+        
         return response;
       } catch (err: any) {
         return rejectWithValue(err.response.data);
@@ -157,6 +172,17 @@ const dataSlice = createSlice({
                 state.isDailyProgressLoading = 'succeeded';
             })
             .addCase(getDailyProgressThunk.rejected, (state, action) => {
+                state.isDailyProgressLoading = 'failed';
+                state.error = action.error.message ?? null;
+            })
+            .addCase(getStreakThunk.pending, (state) => {
+                state.isDailyProgressLoading = 'pending';
+            })
+            .addCase(getStreakThunk.fulfilled, (state, action: PayloadAction<number>) => {
+                state.streak = action.payload;
+                state.isDailyProgressLoading = 'succeeded';
+            })
+            .addCase(getStreakThunk.rejected, (state, action) => {
                 state.isDailyProgressLoading = 'failed';
                 state.error = action.error.message ?? null;
             })

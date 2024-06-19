@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, Text, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { WeeklyProgressChart } from "../Charts/WeeklyProgressChart";
@@ -9,6 +9,7 @@ import { AppDispatch } from "../../store/store";
 import { RootAuthState, RootDataState } from "../../interfaces/store";
 import { getStreakThunk } from "../../actions/data";
 import { SectionCard } from "../../ui/SectionCard";
+import { colors } from "../../ui/constants/colors";
 
 export const Statistics = () => {
   const { currentOrientation } = useOrientation();
@@ -25,29 +26,41 @@ export const Statistics = () => {
 
   useEffect(() => {
     dispatch(getStreakThunk({ userId, token, date, goal: userGoal })).unwrap();
-    console.log("streeeeeak", streak);
-  }, [userGoal, userId, token, streak]);
+  }, [userGoal, userId, token]);
 
   return (
-    <View style={styles(isPortrait).container}>
+    <ScrollView
+      contentContainerStyle={styles(isPortrait).contentContainer}
+      contentInset={{ bottom: 64 }}
+    >
+      <SectionCard>
+        <Text style={styles(isPortrait).text}>Streak: {streak}</Text>
+      </SectionCard>
       <SectionCard>
         <WeeklyProgressChart />
       </SectionCard>
       <SectionCard>
         <MonthlyProgressChart />
       </SectionCard>
-    </View>
+    </ScrollView>
   );
 };
 
-const styles = (isPortrait?: boolean) =>
+const styles = (isPortrait: boolean) =>
   StyleSheet.create({
-    container: {
+    contentContainer: {
       flex: 1,
       backgroundColor: "transparent",
       gap: isPortrait ? 24 : 0,
       display: "flex",
       flexDirection: isPortrait ? "column" : "row",
       paddingHorizontal: 16,
+    },
+    text: {
+      fontSize: 20,
+      fontWeight: "bold",
+      padding: 12,
+      color: colors.darkPrimary,
+      textAlign: "center",
     },
   });

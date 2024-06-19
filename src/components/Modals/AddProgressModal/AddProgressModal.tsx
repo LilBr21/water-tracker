@@ -9,7 +9,10 @@ import { useFonts } from "expo-font";
 import { Input } from "../../../ui/Input";
 import { colors } from "../../../ui/constants/colors";
 import { Button } from "../../../ui/Button";
-import { updateDailyProgressThunk } from "../../../actions/data";
+import {
+  updateDailyProgressThunk,
+  getStreakThunk,
+} from "../../../actions/data";
 import { useOrientation, Orientation } from "../../../hooks/useOrientation";
 import { RootAuthState, RootDataState } from "../../../interfaces/store";
 import { AppDispatch } from "../../../store/store";
@@ -34,6 +37,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
   const dailyProgress = useSelector(
     (state: RootDataState) => state.data.dailyProgress
   );
+  const userGoal = useSelector((state: RootDataState) => state.data.userGoal);
 
   const { currentOrientation } = useOrientation();
   const isPortrait = currentOrientation === Orientation.PORTRAIT;
@@ -90,6 +94,9 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
           drink_type: chosenDrink,
           token,
         })
+      ).unwrap();
+      dispatch(
+        getStreakThunk({ userId, token, date, goal: userGoal })
       ).unwrap();
     } catch (error) {
       toast.show("Failed to update progress", {

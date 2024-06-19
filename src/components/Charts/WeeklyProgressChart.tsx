@@ -10,11 +10,21 @@ import {
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 import { getCurrentWeekDay, getPastWeekDays } from "../../utils/date";
+import { getWeekDayDetailsIndex } from "../../utils/data";
 import { getDailyProgress } from "../../api/trackerData";
 import { colors } from "../../ui/constants/colors";
 import { RootAuthState, RootDataState } from "../../interfaces/store";
+import { IDayDetails } from "../Statistics/Statistics";
 
-export const WeeklyProgressChart = () => {
+interface IProps {
+  handleSetDayDetails: (dayDetails: IDayDetails) => void;
+  handleViewDayDetails: () => void;
+}
+
+export const WeeklyProgressChart = ({
+  handleSetDayDetails,
+  handleViewDayDetails,
+}: IProps) => {
   const [weeklyProgress, setWeeklyProgress] = useState<null | any[]>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pastWeeks, setPastWeeks] = useState(0);
@@ -140,8 +150,11 @@ export const WeeklyProgressChart = () => {
       return [];
     }
 
+    console.log(weeklyProgress);
+
     return weeklyProgress.flatMap((day, index) => {
       const xValue = getPastWeekDays(currentDay)[index];
+      console.log("xValue", xValue, index);
       return Object.keys(day).map((key) => {
         return {
           x: xValue,
@@ -201,7 +214,44 @@ export const WeeklyProgressChart = () => {
                 {generateData()
                   .reverse()
                   .map((day, i) => (
-                    <VictoryBar key={i} data={[day]} />
+                    <VictoryBar
+                      key={i}
+                      data={[day]}
+                      events={[
+                        {
+                          target: "data",
+                          eventHandlers: {
+                            onPress: () => {
+                              console.log("pressed", day, i);
+                              console.log(getWeekDayDetailsIndex(i));
+                              const dayName =
+                                getPastWeekDays(currentDay)[
+                                  getWeekDayDetailsIndex(i) ?? 0
+                                ];
+                              handleSetDayDetails({
+                                day: dayName,
+                                water: weeklyProgress
+                                  ? weeklyProgress[
+                                      getWeekDayDetailsIndex(i) ?? 0
+                                    ].water
+                                  : 0,
+                                juice: weeklyProgress
+                                  ? weeklyProgress[
+                                      getWeekDayDetailsIndex(i) ?? 0
+                                    ].juice
+                                  : 0,
+                                coffee: weeklyProgress
+                                  ? weeklyProgress[
+                                      getWeekDayDetailsIndex(i) ?? 0
+                                    ].coffee
+                                  : 0,
+                              });
+                              handleViewDayDetails();
+                            },
+                          },
+                        },
+                      ]}
+                    />
                   ))}
               </VictoryStack>
             </VictoryChart>

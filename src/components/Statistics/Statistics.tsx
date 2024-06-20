@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, ScrollView, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { WeeklyProgressChart } from "../Charts/WeeklyProgressChart";
@@ -10,6 +16,7 @@ import { RootAuthState, RootDataState } from "../../interfaces/store";
 import { getStreakThunk } from "../../actions/data";
 import { SectionCard } from "../../ui/SectionCard";
 import { colors } from "../../ui/constants/colors";
+import { DayDetails } from "./DayDetails";
 
 export interface IDayDetails {
   day: string;
@@ -48,52 +55,56 @@ export const Statistics = () => {
   };
 
   const handleViewDayDetails = () => {
-    setAreDetailsVisible((prevState) => !prevState);
+    setAreDetailsVisible(true);
+  };
+
+  const hideDayDetails = () => {
+    if (areDetailsVisible) {
+      setAreDetailsVisible(false);
+    }
   };
 
   return (
     <View style={styles(isPortrait).container}>
-      <ScrollView
-        contentContainerStyle={styles(isPortrait).contentContainer}
-        contentInset={{ bottom: 64 }}
-      >
-        <SectionCard>
-          <Text style={styles(isPortrait).text}>Streak: {streak}</Text>
-        </SectionCard>
-        <SectionCard>
-          <WeeklyProgressChart
-            handleSetDayDetails={handleSetDayDetails}
-            handleViewDayDetails={handleViewDayDetails}
-          />
-        </SectionCard>
-        <SectionCard>
-          <MonthlyProgressChart />
-        </SectionCard>
-      </ScrollView>
-      {areDetailsVisible && (
-        <View>
-          <Text>{dayDetails.day} details:</Text>
-          <Text>Water: {dayDetails.water}</Text>
-          <Text>Juice: {dayDetails.juice}</Text>
-          <Text>Coffee: {dayDetails.coffee}</Text>
-        </View>
-      )}
+      <TouchableOpacity activeOpacity={1} onPress={hideDayDetails}>
+        <ScrollView
+          contentContainerStyle={
+            styles(isPortrait, areDetailsVisible).contentContainer
+          }
+          contentInset={{ bottom: 64 }}
+        >
+          <SectionCard>
+            <Text style={styles(isPortrait).text}>Streak: {streak}</Text>
+          </SectionCard>
+          <SectionCard>
+            <WeeklyProgressChart
+              handleSetDayDetails={handleSetDayDetails}
+              handleViewDayDetails={handleViewDayDetails}
+            />
+          </SectionCard>
+          <SectionCard>
+            <MonthlyProgressChart />
+          </SectionCard>
+        </ScrollView>
+      </TouchableOpacity>
+      {areDetailsVisible && <DayDetails dayDetails={dayDetails} />}
     </View>
   );
 };
 
-const styles = (isPortrait: boolean) =>
+const styles = (isPortrait: boolean, areDetailsVisible?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: "transparent",
     },
     contentContainer: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: "transparent",
       gap: isPortrait ? 24 : 0,
-      display: "flex",
       flexDirection: isPortrait ? "column" : "row",
       paddingHorizontal: 16,
+      opacity: areDetailsVisible ? 0.5 : 1,
     },
     text: {
       fontSize: 20,

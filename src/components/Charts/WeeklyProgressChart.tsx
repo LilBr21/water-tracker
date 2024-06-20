@@ -150,11 +150,9 @@ export const WeeklyProgressChart = ({
       return [];
     }
 
-    console.log(weeklyProgress);
-
     return weeklyProgress.flatMap((day, index) => {
       const xValue = getPastWeekDays(currentDay)[index];
-      console.log("xValue", xValue, index);
+
       return Object.keys(day).map((key) => {
         return {
           x: xValue,
@@ -222,8 +220,6 @@ export const WeeklyProgressChart = ({
                           target: "data",
                           eventHandlers: {
                             onPress: () => {
-                              console.log("pressed", day, i);
-                              console.log(getWeekDayDetailsIndex(i));
                               const dayName =
                                 getPastWeekDays(currentDay)[
                                   getWeekDayDetailsIndex(i) ?? 0

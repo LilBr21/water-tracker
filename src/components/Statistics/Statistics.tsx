@@ -41,13 +41,27 @@ export const Statistics = () => {
   const token = useSelector((state: RootAuthState) => state.auth.token);
   const userId = useSelector((state: RootAuthState) => state.auth.userId);
   const streak = useSelector((state: RootDataState) => state.data.streak);
+  const dailyProgress = useSelector(
+    (state: RootDataState) => state.data.dailyProgress
+  );
 
-  const date = format(new Date(), "dd-MM-yyyy");
+  const drankToday =
+    dailyProgress.coffee + dailyProgress.juice + dailyProgress.water;
+  const goalCompleted = drankToday >= userGoal;
+
+  const yesterday = format(
+    new Date(new Date().setDate(new Date().getDate() - 1)),
+    "dd-MM-yyyy"
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
+  const streakValue = goalCompleted ? streak + 1 : streak;
+
   useEffect(() => {
-    dispatch(getStreakThunk({ userId, token, date, goal: userGoal })).unwrap();
+    dispatch(
+      getStreakThunk({ userId, token, date: yesterday, goal: userGoal })
+    ).unwrap();
   }, [userGoal, userId, token]);
 
   const handleSetDayDetails = (dayDetails: IDayDetails) => {
@@ -82,7 +96,7 @@ export const Statistics = () => {
           contentInset={{ bottom: 64 }}
         >
           <SectionCard>
-            <Text style={styles(isPortrait).text}>Streak: {streak}</Text>
+            <Text style={styles(isPortrait).text}>Streak: {streakValue}</Text>
           </SectionCard>
           <SectionCard>
             <WeeklyProgressChart

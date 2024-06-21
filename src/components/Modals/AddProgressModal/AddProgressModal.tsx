@@ -79,6 +79,10 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
     const year = getYear(new Date()).toString();
     const month = getMonth(new Date()).toString();
     const date = format(new Date(), "dd-MM-yyyy");
+    const yesterday = format(
+      new Date(new Date().setDate(new Date().getDate() - 1)),
+      "dd-MM-yyyy"
+    );
     const drankToday = getDrankToday();
     const ammountToAdd = chosenAmmount > 0 ? chosenAmmount : selectedAmmount;
     const totalDailyProgress = drankToday + ammountToAdd;
@@ -96,7 +100,7 @@ export const AddProgressModal = ({ isVisible, onClose }: IProps) => {
         })
       ).unwrap();
       dispatch(
-        getStreakThunk({ userId, token, date, goal: userGoal })
+        getStreakThunk({ userId, token, date: yesterday, goal: userGoal })
       ).unwrap();
     } catch (error) {
       toast.show("Failed to update progress", {

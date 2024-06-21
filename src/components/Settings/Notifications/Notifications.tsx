@@ -1,12 +1,27 @@
-import { Switch, View, Text, StyleSheet, Alert, Platform } from "react-native";
+import {
+  Switch,
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import * as Notifications from "expo-notifications";
 import { useToast } from "react-native-toast-notifications";
 import { colors } from "../../../ui/constants/colors";
 
+enum NotificationType {
+  DAILY = "DAILY",
+  INTERVAL = "INTERVAL",
+}
+
 export const NotificationsSetting = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [notificationId, setNotificationId] = useState<string | null>(null);
+  const [chosenNotificationType, setChosenNotificationType] =
+    useState<NotificationType>(NotificationType.DAILY);
 
   const toast = useToast();
 
@@ -76,26 +91,92 @@ export const NotificationsSetting = () => {
     }
   };
 
+  const handleChoooseDaily = () => {
+    setChosenNotificationType(NotificationType.DAILY);
+  };
+
+  const handleChooseInterval = () => {
+    setChosenNotificationType(NotificationType.INTERVAL);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Enable notifications:</Text>
-      <Switch value={isEnabled} onValueChange={toggleSwitch} />
+    <View style={styles().container}>
+      <View style={styles().enableContainer}>
+        <Text style={styles().text}>Enable notifications:</Text>
+        <Switch value={isEnabled} onValueChange={toggleSwitch} />
+      </View>
+      {isEnabled && (
+        <View>
+          <View style={styles().notificationTypesContainer}>
+            <TouchableOpacity
+              onPress={handleChoooseDaily}
+              style={
+                styles(chosenNotificationType === NotificationType.DAILY).button
+              }
+            >
+              <Text
+                style={
+                  styles(chosenNotificationType === NotificationType.DAILY).text
+                }
+              >
+                Once a day
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleChooseInterval}
+              style={
+                styles(chosenNotificationType === NotificationType.INTERVAL)
+                  .button
+              }
+            >
+              <Text
+                style={
+                  styles(chosenNotificationType === NotificationType.INTERVAL)
+                    .text
+                }
+              >
+                Time interval
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: 16,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    justifyContent: "space-between",
-  },
-  text: {
-    color: colors.darkPrimary,
-    fontSize: 16,
-  },
-});
+const styles = (notificationChosen?: boolean) =>
+  StyleSheet.create({
+    container: {
+      gap: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+    },
+    enableContainer: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    text: {
+      color: notificationChosen ? colors.lightPrimary : colors.darkPrimary,
+      fontSize: 16,
+    },
+    notificationTypesContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-around",
+      width: "100%",
+    },
+    button: {
+      backgroundColor: notificationChosen
+        ? colors.darkPrimary
+        : colors.lightPrimary,
+      padding: 8,
+      borderRadius: 4,
+      flexGrow: 1,
+      marginHorizontal: 4,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });

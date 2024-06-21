@@ -66,7 +66,7 @@ export const DayDetails = ({ dayDetails, toggleDayDetails }: IProps) => {
         exiting={SlideOutDown}
       >
         <View style={styles.contentWrapper}>
-          <Text style={styles.text}>
+          <Text style={[styles.text, styles.header]}>
             {getFullDayName(dayDetails.day)} details
           </Text>
           <View style={styles.dataContainer}>
@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     color: colors.darkPrimary,
     fontSize: 16,
     paddingTop: 4,
+  },
+  header: {
+    fontWeight: 600,
   },
   waterText: {
     color: colors.actionPrimary,

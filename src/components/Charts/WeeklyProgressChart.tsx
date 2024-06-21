@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     margin: 16,
     textAlign: "center",
+    fontWeight: "600",
   },
   date: {
     color: colors.darkPrimary,

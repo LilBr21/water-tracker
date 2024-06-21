@@ -59,10 +59,13 @@ export const Statistics = () => {
   };
 
   const hideDayDetails = () => {
-    console.log(areDetailsVisible);
     if (areDetailsVisible) {
       setAreDetailsVisible(false);
     }
+  };
+
+  const toggleDayDetails = () => {
+    setAreDetailsVisible((prevState) => !prevState);
   };
 
   return (
@@ -92,7 +95,12 @@ export const Statistics = () => {
           </SectionCard>
         </ScrollView>
       </TouchableOpacity>
-      {areDetailsVisible && <DayDetails dayDetails={dayDetails} />}
+      {areDetailsVisible && (
+        <DayDetails
+          dayDetails={dayDetails}
+          toggleDayDetails={toggleDayDetails}
+        />
+      )}
     </View>
   );
 };

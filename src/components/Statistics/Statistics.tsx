@@ -59,6 +59,7 @@ export const Statistics = () => {
   };
 
   const hideDayDetails = () => {
+    console.log(areDetailsVisible);
     if (areDetailsVisible) {
       setAreDetailsVisible(false);
     }
@@ -66,7 +67,11 @@ export const Statistics = () => {
 
   return (
     <View style={styles(isPortrait).container}>
-      <TouchableOpacity activeOpacity={1} onPress={hideDayDetails}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles(isPortrait).touchable}
+        onPress={hideDayDetails}
+      >
         <ScrollView
           contentContainerStyle={
             styles(isPortrait, areDetailsVisible).contentContainer
@@ -96,6 +101,10 @@ const styles = (isPortrait: boolean, areDetailsVisible?: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: "transparent",
+    },
+    touchable: {
+      flexGrow: 1,
       backgroundColor: "transparent",
     },
     contentContainer: {

@@ -141,7 +141,6 @@ export const MonthlyProgressChart = () => {
       return {
         x: index + 1,
         y: day === 0 ? "" : day,
-        label: day === 0 ? "" : day,
       };
     });
   };

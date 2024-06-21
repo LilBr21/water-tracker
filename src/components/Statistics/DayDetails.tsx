@@ -9,7 +9,13 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import { Entypo } from "@expo/vector-icons";
+import { RootDataState } from "../../interfaces/store";
 import { colors } from "../../ui/constants/colors";
+import Coffe from "../../assets/coffee-cup.svg";
+import Juice from "../../assets/juice.svg";
+import Water from "../../assets/water-glass.svg";
 import { getFullDayName } from "../../utils/date";
 import { IDayDetails } from "./Statistics";
 
@@ -19,6 +25,11 @@ interface IProps {
 }
 
 export const DayDetails = ({ dayDetails, toggleDayDetails }: IProps) => {
+  const userGoal = useSelector((state: RootDataState) => state.data.userGoal);
+  const sumDrinks = dayDetails.water + dayDetails.juice + dayDetails.coffee;
+
+  const goalCompleted = sumDrinks >= userGoal;
+
   const offset = useSharedValue(0);
 
   const handleToggle = () => {
@@ -34,10 +45,10 @@ export const DayDetails = ({ dayDetails, toggleDayDetails }: IProps) => {
       offset.value = offsetDelta > 0 ? offsetDelta : withSpring(clamp);
     })
     .onFinalize(() => {
-      if (offset.value < 200 / 3) {
+      if (offset.value < 320 / 3) {
         offset.value = withSpring(0);
       } else {
-        offset.value = withTiming(200, {}, () => {
+        offset.value = withTiming(320, {}, () => {
           runOnJS(handleToggle)();
         });
       }
@@ -61,14 +72,25 @@ export const DayDetails = ({ dayDetails, toggleDayDetails }: IProps) => {
           <View style={styles.dataContainer}>
             <Text style={styles.text}>Water:</Text>
             <Text style={styles.waterText}>{dayDetails.water} ml</Text>
+            <Water width={48} height={48} />
           </View>
           <View style={styles.dataContainer}>
             <Text style={styles.text}>Juice:</Text>
             <Text style={styles.juiceText}>{dayDetails.juice} ml</Text>
+            <Juice width={48} height={48} />
           </View>
           <View style={styles.dataContainer}>
             <Text style={styles.text}>Coffee:</Text>
             <Text style={styles.coffeeText}>{dayDetails.coffee} ml</Text>
+            <Coffe width={48} height={48} />
+          </View>
+          <View style={styles.dataContainer}>
+            <Text style={styles.text}>Goal completed:</Text>
+            {goalCompleted ? (
+              <Entypo name="check" size={24} color={colors.successPrimary} />
+            ) : (
+              <Entypo name="cross" size={24} color={colors.errorPrimary} />
+            )}
           </View>
         </View>
       </Animated.View>
@@ -85,7 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightPrimary,
     borderTopLeftRadius: 70,
     borderTopRightRadius: 70,
-    height: 200,
+    height: 320,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
@@ -94,22 +116,30 @@ const styles = StyleSheet.create({
   text: {
     color: colors.darkPrimary,
     fontSize: 16,
+    paddingTop: 4,
   },
   waterText: {
     color: colors.actionPrimary,
     fontSize: 16,
+    paddingTop: 4,
   },
   juiceText: {
     color: colors.orangePrimary,
     fontSize: 16,
+    paddingTop: 4,
   },
   coffeeText: {
     color: colors.brownPrimary,
     fontSize: 16,
+    paddingTop: 4,
   },
   dataContainer: {
     display: "flex",
     flexDirection: "row",
     gap: 12,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "40%",
+    height: 48,
   },
 });

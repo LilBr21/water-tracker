@@ -9,10 +9,10 @@ import {
 } from "react-native";
 import { useState } from "react";
 import * as Notifications from "expo-notifications";
-import { AntDesign } from "@expo/vector-icons";
 import { useToast } from "react-native-toast-notifications";
 import { colors } from "../../../ui/constants/colors";
 import { DailyNotifications } from "./DailyNotifications";
+import { IntervalNotifications } from "./IntervalNotifications";
 
 enum NotificationType {
   DAILY = "DAILY",
@@ -158,10 +158,7 @@ export const NotificationsSetting = () => {
               handleChooseDailyTime={handleChooseDailyTime}
             />
           ) : (
-            <View style={styles().reminderDetailsContainer}>
-              <Text>You will receive a reminder every:</Text>
-              <Text>1 hour</Text>
-            </View>
+            <IntervalNotifications />
           )}
         </View>
       )}
@@ -202,8 +199,5 @@ const styles = (notificationChosen?: boolean) =>
       marginHorizontal: 4,
       justifyContent: "center",
       alignItems: "center",
-    },
-    reminderDetailsContainer: {
-      marginTop: 24,
     },
   });

@@ -23,13 +23,11 @@ export const DailyNotifications = ({
   };
 
   const handleConfirm = (time: Date) => {
-    console.log(time, typeof time);
     setIsPickerVisible(false);
     handleChooseDailyTime(time.getHours(), time.getMinutes());
   };
 
   const dailyMinute = ("0" + dailyNotificationMinute).slice(-2);
-  console.log("dailyMinute", dailyMinute);
 
   return (
     <View style={styles.container}>

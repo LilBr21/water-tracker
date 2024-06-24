@@ -9,8 +9,10 @@ import {
 } from "react-native";
 import { useState } from "react";
 import * as Notifications from "expo-notifications";
+import { AntDesign } from "@expo/vector-icons";
 import { useToast } from "react-native-toast-notifications";
 import { colors } from "../../../ui/constants/colors";
+import { DailyNotifications } from "./DailyNotifications";
 
 enum NotificationType {
   DAILY = "DAILY",
@@ -22,6 +24,10 @@ export const NotificationsSetting = () => {
   const [notificationId, setNotificationId] = useState<string | null>(null);
   const [chosenNotificationType, setChosenNotificationType] =
     useState<NotificationType>(NotificationType.DAILY);
+  const [dailyNotificationHour, setDailyNotificationHour] =
+    useState<number>(17);
+  const [dailyNotificationMinute, setDailyNotificationMinute] =
+    useState<number>(0);
 
   const toast = useToast();
 
@@ -64,8 +70,8 @@ export const NotificationsSetting = () => {
             body: "Time to drink some water!",
           },
           trigger: {
-            hour: 17,
-            minute: 0,
+            hour: dailyNotificationHour,
+            minute: dailyNotificationMinute,
             repeats: true,
           },
         });
@@ -97,6 +103,11 @@ export const NotificationsSetting = () => {
 
   const handleChooseInterval = () => {
     setChosenNotificationType(NotificationType.INTERVAL);
+  };
+
+  const handleChooseDailyTime = (hour: number, minute: number) => {
+    setDailyNotificationHour(hour);
+    setDailyNotificationMinute(minute);
   };
 
   return (
@@ -139,6 +150,19 @@ export const NotificationsSetting = () => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {chosenNotificationType === NotificationType.DAILY ? (
+            <DailyNotifications
+              dailyNotificationHour={dailyNotificationHour}
+              dailyNotificationMinute={dailyNotificationMinute}
+              handleChooseDailyTime={handleChooseDailyTime}
+            />
+          ) : (
+            <View style={styles().reminderDetailsContainer}>
+              <Text>You will receive a reminder every:</Text>
+              <Text>1 hour</Text>
+            </View>
+          )}
         </View>
       )}
     </View>
@@ -178,5 +202,8 @@ const styles = (notificationChosen?: boolean) =>
       marginHorizontal: 4,
       justifyContent: "center",
       alignItems: "center",
+    },
+    reminderDetailsContainer: {
+      marginTop: 24,
     },
   });
